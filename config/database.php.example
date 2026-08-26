@@ -1,0 +1,13 @@
+<?php
+/**
+ * Konfigurasi contoh untuk database.php.
+ * Salin file ini menjadi database.php lalu isi kredensial lokal Anda.
+ * database.php TIDAK boleh ikut di-commit ke repositori.
+ */
+
+define('DB_HOST', '127.0.0.1');
+define('DB_PORT', '3306');
+define('DB_NAME', 'diskominfo_pkl');
+define('DB_USER', 'diskominfo_pkl');
+define('DB_PASS', 'GANTI_DENGAN_PASSWORD_ANDA');
+define('DB_CHARSET', 'utf8mb4');

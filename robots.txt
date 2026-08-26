@@ -1,0 +1,16 @@
+# robots.txt — Portal PKL & Magang Diskominfo Provinsi Banten
+# Semua crawler diizinkan, kecuali direktori internal aplikasi.
+
+User-agent: *
+Disallow: /admin/
+Disallow: /helpers/
+Disallow: /config/
+Disallow: /includes/
+Disallow: /pages/
+Disallow: /logs/
+Disallow: /database/
+
+# Halaman pencarian dan 404 sudah diberi meta noindex, follow.
+
+# Wajib disesuaikan bila domain akhir berbeda.
+Sitemap: https://pkl.diskominfo.bantenprov.go.id/sitemap.php

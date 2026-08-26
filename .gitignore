@@ -1,0 +1,27 @@
+# Kredensial database (jangan pernah di-commit)
+config/database.php
+
+# Konten upload pengguna
+uploads/news/*
+uploads/albums/*
+uploads/documents/*
+uploads/videos/*
+uploads/alumni/*
+uploads/karya/*
+uploads/photos/*
+uploads/avatars/*
+
+# Log aplikasi
+logs/*
+!logs/.htaccess
+
+# Hasil backup lokal (jangan di-commit)
+backup/
+
+# File sistem/editor
+Thumbs.db
+.DS_Store
+*.log
+
+# Artefak sesi/dump internal yang tidak boleh ikut versi
+session-ses_*.md

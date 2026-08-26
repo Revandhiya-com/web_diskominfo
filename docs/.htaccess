@@ -1,0 +1,7 @@
+# ============================================================
+# Blokir akses langsung ke direktori dokumen internal ini.
+# ============================================================
+
+<FilesMatch ".*">
+    Require all denied
+</FilesMatch>

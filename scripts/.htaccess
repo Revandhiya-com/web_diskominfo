@@ -1,0 +1,5 @@
+# ============================================================
+# Proteksi folder scripts — semua akses web ditolak.
+# Skrip di sini hanya boleh dijalankan via CLI (mis. Task Scheduler).
+# ============================================================
+Require all denied

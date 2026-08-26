@@ -1,0 +1,8 @@
+﻿# ============================================================
+# Blokir akses langsung ke direktori internal ini.
+# Berlaku untuk instalasi di root maupun subfolder (mis. /diskominfo-pkl).
+# ============================================================
+
+<FilesMatch ".*">
+    Require all denied
+</FilesMatch>

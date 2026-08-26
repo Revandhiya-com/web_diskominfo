@@ -1,0 +1,7 @@
+# ============================================================
+# Blokir akses langsung ke folder log ini.
+# ============================================================
+
+<FilesMatch ".*">
+    Require all denied
+</FilesMatch>
