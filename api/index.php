@@ -1,9 +1,10 @@
 <?php
 /**
- * Front controller — pintu masuk seluruh halaman publik.
- * Route: index.php?page=nama -> pages/nama.php
+ * Vercel entry point — front controller untuk Vercel.
+ * Berisi logika routing yang sama dengan index.php di root,
+ * dengan BASE_PATH disesuaikan (berada satu level di dalam /api).
  */
-define('BASE_PATH', __DIR__);
+define('BASE_PATH', dirname(__DIR__));
 
 require BASE_PATH . '/config/app.php';
 require BASE_PATH . '/config/database.php';

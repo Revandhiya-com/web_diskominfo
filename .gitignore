@@ -1,5 +1,7 @@
-# Kredensial database (jangan pernah di-commit)
-config/database.php
+# Kredensial database: file ini AMAN di-commit karena hanya berisi
+# konfigurasi env-aware (tidak ada secret produksi — rahasia diambil dari
+# environment variable Vercel/Supabase). JANGAN commit file .env atau dump.
+config/database.php.example
 
 # Konten upload pengguna
 uploads/news/*
@@ -25,3 +27,4 @@ Thumbs.db
 
 # Artefak sesi/dump internal yang tidak boleh ikut versi
 session-ses_*.md
+.vercel

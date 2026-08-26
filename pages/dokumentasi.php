@@ -22,9 +22,9 @@ $categories = q_all('SELECT id, name, slug FROM album_categories ORDER BY name A
 
 /* Tahun yang tersedia (dari data album) */
 $years = q_all(
-    'SELECT DISTINCT YEAR(event_date) AS tahun
+    'SELECT DISTINCT EXTRACT(YEAR FROM event_date) AS tahun
      FROM albums
-     WHERE status = "published" AND event_date IS NOT NULL
+     WHERE status = $$published$$ AND event_date IS NOT NULL
      ORDER BY tahun DESC'
 );
 
@@ -34,7 +34,7 @@ $bulanList = [
 ];
 
 /* Bangun filter */
-$where  = ['a.status = "published"'];
+$where  = ['a.status = $$published$$'];
 $params = [];
 if ($q !== '') {
     $where[] = '(a.title LIKE ? OR a.description LIKE ? OR a.location LIKE ?)';
@@ -46,11 +46,11 @@ if ($catSlug !== '') {
     $params[] = $catSlug;
 }
 if ($tahun !== '' && ctype_digit($tahun)) {
-    $where[] = 'YEAR(a.event_date) = ?';
+    $where[] = 'EXTRACT(YEAR FROM a.event_date) = ?';
     $params[] = (int) $tahun;
 }
 if ($bulan !== '' && ctype_digit($bulan) && (int) $bulan >= 1 && (int) $bulan <= 12) {
-    $where[] = 'MONTH(a.event_date) = ?';
+    $where[] = 'EXTRACT(MONTH FROM a.event_date) = ?';
     $params[] = (int) $bulan;
 }
 $whereSql = implode(' AND ', $where);

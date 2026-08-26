@@ -15,7 +15,7 @@ $breadcrumbs = [
 $perPage = 12;
 $q = get_val('q');
 
-$where  = ['status = "published"'];
+$where  = ['status = $$published$$'];
 $params = [];
 if ($q !== '') {
     $where[] = '(name LIKE ? OR institution LIKE ? OR major LIKE ? OR CAST(year AS CHAR) LIKE ?)';
@@ -30,7 +30,7 @@ $alumni = q_all(
     "SELECT id, name, slug, photo, type, institution, major, start_date, end_date, year, division
      FROM alumni
      WHERE $whereSql
-     ORDER BY COALESCE(year, YEAR(created_at)) DESC, name ASC
+     ORDER BY COALESCE(year, EXTRACT(YEAR FROM created_at)) DESC, name ASC
      LIMIT {$pagination['per_page']} OFFSET {$pagination['offset']}",
     $params
 );

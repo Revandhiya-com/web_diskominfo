@@ -34,7 +34,7 @@ if ($q !== '') {
 $where = $parts ? 'WHERE ' . implode(' AND ', $parts) : '';
 $total = (int) (q_one("SELECT COUNT(*) n FROM alumni $where", $params)['n'] ?? 0);
 $pageInfo = pagination_info($total, 10);
-$items = q_all("SELECT * FROM alumni $where ORDER BY COALESCE(year, YEAR(created_at)) DESC, name ASC LIMIT {$pageInfo['per_page']} OFFSET {$pageInfo['offset']}", $params);
+$items = q_all("SELECT * FROM alumni $where ORDER BY COALESCE(year, EXTRACT(YEAR FROM created_at)) DESC, name ASC LIMIT {$pageInfo['per_page']} OFFSET {$pageInfo['offset']}", $params);
 
 admin_layout_start('Alumni', 'alumni');
 ?>

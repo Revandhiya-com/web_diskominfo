@@ -1,0 +1,22 @@
+# Jangan upload ke Vercel (atau jangan dijadikan static file)
+.git
+node_modules
+backup
+logs/*
+!logs/.htaccess
+uploads/news/*
+uploads/albums/*
+uploads/documents/*
+uploads/videos/*
+uploads/alumni/*
+uploads/karya/*
+uploads/photos/*
+uploads/avatars/*
+.env
+*.log
+
+# Hindari file PHP root di-serve sebagai static (biar rewrite ke api/ berlaku)
+/index.php
+/sitemap.php
+/admin/**
+/scripts/**

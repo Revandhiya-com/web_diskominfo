@@ -70,8 +70,8 @@ $documentCats  = q_all('SELECT id, name FROM document_categories ORDER BY name A
 $faqCats       = q_all("SELECT DISTINCT category AS name FROM faqs WHERE is_active = 1 AND category IS NOT NULL AND category <> '' ORDER BY category ASC");
 $fileTypes     = q_all("SELECT DISTINCT LOWER(SUBSTRING_INDEX(file, '.', -1)) AS t FROM documents WHERE file IS NOT NULL AND file <> '' ORDER BY t ASC");
 
-$newsYears    = q_all("SELECT DISTINCT YEAR(COALESCE(published_at, created_at)) AS y FROM news WHERE status = 'published' AND COALESCE(published_at, created_at) IS NOT NULL ORDER BY y DESC");
-$albumYears   = q_all("SELECT DISTINCT YEAR(COALESCE(event_date, created_at)) AS y FROM albums WHERE status = 'published' AND COALESCE(event_date, created_at) IS NOT NULL ORDER BY y DESC");
+$newsYears    = q_all("SELECT DISTINCT EXTRACT(YEAR FROM COALESCE(published_at, created_at)) AS y FROM news WHERE status = 'published' AND COALESCE(published_at, created_at) IS NOT NULL ORDER BY y DESC");
+$albumYears   = q_all("SELECT DISTINCT EXTRACT(YEAR FROM COALESCE(event_date, created_at)) AS y FROM albums WHERE status = 'published' AND COALESCE(event_date, created_at) IS NOT NULL ORDER BY y DESC");
 
 $months = [1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
            7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'];
@@ -94,7 +94,7 @@ if ($type === '' || $type === 'news') {
         $params[] = $catId;
     }
     if ($year > 0) {
-        $parts[]  = 'YEAR(COALESCE(n.published_at, n.created_at)) = ?';
+        $parts[]  = 'EXTRACT(YEAR FROM COALESCE(n.published_at, n.created_at)) = ?';
         $params[] = $year;
     }
     foreach (q_all(
@@ -131,11 +131,11 @@ if ($type === '' || $type === 'albums') {
         $params[] = $catId;
     }
     if ($year > 0) {
-        $parts[]  = 'YEAR(COALESCE(a.event_date, a.created_at)) = ?';
+        $parts[]  = 'EXTRACT(YEAR FROM COALESCE(a.event_date, a.created_at)) = ?';
         $params[] = $year;
     }
     if ($month > 0) {
-        $parts[]  = 'MONTH(COALESCE(a.event_date, a.created_at)) = ?';
+        $parts[]  = 'EXTRACT(MONTH FROM COALESCE(a.event_date, a.created_at)) = ?';
         $params[] = $month;
     }
     foreach (q_all(

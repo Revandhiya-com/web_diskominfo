@@ -18,7 +18,7 @@ if ($detailId > 0) {
     $detail = q_one(
         'SELECT id, title, content, is_pinned, published_at
          FROM announcements
-         WHERE status = "published" AND id = ?',
+         WHERE status = $$published$$ AND id = ?',
         [$detailId]
     );
 }
@@ -27,7 +27,7 @@ if ($detailId > 0) {
 $announcements = q_all(
     'SELECT id, title, content, is_pinned, published_at
      FROM announcements
-     WHERE status = "published"
+     WHERE status = $$published$$
      ORDER BY is_pinned DESC, published_at DESC'
 );
 

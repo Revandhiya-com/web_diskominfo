@@ -56,7 +56,7 @@ if (is_post()) {
     foreach ($groups as $g => $fields) {
         foreach ($fields as $key => $cfg) {
             $value = (string) ($_POST['setting_' . $key] ?? '');
-            if (q_changes('UPDATE settings SET `value` = ? WHERE `key` = ?', [$value, $key]) > 0) {
+            if (q_changes('UPDATE settings SET "value" = ? WHERE "key" = ?', [$value, $key]) > 0) {
                 $updates++;
             }
         }
@@ -66,7 +66,7 @@ if (is_post()) {
 }
 
 $current = [];
-foreach (q_all('SELECT `key`, `value` FROM settings') as $row) {
+foreach (q_all('SELECT "key", "value" FROM settings') as $row) {
     $current[$row['key']] = $row['value'];
 }
 

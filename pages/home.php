@@ -28,7 +28,7 @@ $heroBtn2     = [
 $announcements = q_all(
     'SELECT id, title, content, is_pinned, published_at
      FROM announcements
-     WHERE status = "published"
+     WHERE status = $$published$$
      ORDER BY is_pinned DESC, published_at DESC
      LIMIT 5'
 );
@@ -46,10 +46,10 @@ $aboutBtn   = [
 /* ============================================================
    6. STATISTIK — hitungan nyata dari database
    ============================================================ */
-$statNews   = (int) (q_one('SELECT COUNT(*) AS total FROM news WHERE status = "published"')['total'] ?? 0);
-$statAlbums = (int) (q_one('SELECT COUNT(*) AS total FROM albums WHERE status = "published"')['total'] ?? 0);
+$statNews   = (int) (q_one('SELECT COUNT(*) AS total FROM news WHERE status = $$published$$')['total'] ?? 0);
+$statAlbums = (int) (q_one('SELECT COUNT(*) AS total FROM albums WHERE status = $$published$$')['total'] ?? 0);
 $statPhotos = (int) (q_one('SELECT COUNT(*) AS total FROM photos')['total'] ?? 0);
-$statAgenda = (int) (q_one('SELECT COUNT(*) AS total FROM agendas WHERE status = "published"')['total'] ?? 0);
+$statAgenda = (int) (q_one('SELECT COUNT(*) AS total FROM agendas WHERE status = $$published$$')['total'] ?? 0);
 
 /* ============================================================
    7. BERITA TERBARU — maks 3
@@ -59,7 +59,7 @@ $latestNews = q_all(
             c.name AS category_name
      FROM news n
      LEFT JOIN news_categories c ON c.id = n.category_id
-     WHERE n.status = "published"
+     WHERE n.status = $$published$$
      ORDER BY n.published_at DESC
      LIMIT 3'
 );
@@ -70,7 +70,7 @@ $latestNews = q_all(
 $upcomingAgendas = q_all(
     'SELECT id, title, description, location, start_datetime, end_datetime
      FROM agendas
-     WHERE status = "published" AND start_datetime >= NOW()
+     WHERE status = $$published$$ AND start_datetime >= NOW()
      ORDER BY start_datetime ASC
      LIMIT 3'
 );
@@ -84,7 +84,7 @@ $latestAlbums = q_all(
             (SELECT COUNT(*) FROM photos p WHERE p.album_id = a.id) AS photo_count
      FROM albums a
      LEFT JOIN album_categories c ON c.id = a.category_id
-     WHERE a.status = "published"
+     WHERE a.status = $$published$$
      ORDER BY a.created_at DESC
      LIMIT 6'
 );

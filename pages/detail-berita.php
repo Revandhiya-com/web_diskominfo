@@ -17,7 +17,7 @@ $news = q_one(
      FROM news n
      LEFT JOIN news_categories c ON c.id = n.category_id
      LEFT JOIN users u ON u.id = n.author_id
-     WHERE n.status = "published" AND n.slug = ?',
+     WHERE n.status = $$published$$ AND n.slug = ?',
     [$slug]
 );
 
@@ -56,7 +56,7 @@ $relatedNews = q_all(
             c.name AS category_name
      FROM news n
      LEFT JOIN news_categories c ON c.id = n.category_id
-     WHERE n.status = "published" AND n.id != ?
+     WHERE n.status = $$published$$ AND n.id != ?
        AND (n.category_id = ? OR ? IS NULL)
      ORDER BY n.published_at DESC
      LIMIT 3',
@@ -68,7 +68,7 @@ if (count($relatedNews) < 3) {
                 c.name AS category_name
          FROM news n
          LEFT JOIN news_categories c ON c.id = n.category_id
-         WHERE n.status = "published" AND n.id != ? AND (n.category_id IS NULL OR n.category_id != ?)
+         WHERE n.status = $$published$$ AND n.id != ? AND (n.category_id IS NULL OR n.category_id != ?)
          ORDER BY n.published_at DESC
          LIMIT ?',
         [(int) $news['id'], $news['category_id'], 3 - count($relatedNews)]

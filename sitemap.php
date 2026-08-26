@@ -42,7 +42,7 @@ foreach ($staticPages as $sp) {
 /* Berita published */
 $news = q_all(
     'SELECT slug, published_at FROM news
-     WHERE status = "published" AND slug <> ""
+     WHERE status = $$published$$ AND slug <> $$$$
      ORDER BY published_at DESC'
 );
 foreach ($news as $n) {
@@ -57,7 +57,7 @@ foreach ($news as $n) {
 /* Album published */
 $albums = q_all(
     'SELECT slug, created_at FROM albums
-     WHERE status = "published" AND slug <> ""
+     WHERE status = $$published$$ AND slug <> $$$$
      ORDER BY created_at DESC'
 );
 foreach ($albums as $a) {
@@ -72,7 +72,7 @@ foreach ($albums as $a) {
 /* Alumni published */
 $alumni = q_all(
     'SELECT slug, updated_at FROM alumni
-     WHERE status = "published" AND slug <> ""
+     WHERE status = $$published$$ AND slug <> $$$$
      ORDER BY updated_at DESC'
 );
 foreach ($alumni as $al) {
@@ -88,7 +88,7 @@ foreach ($alumni as $al) {
 $sectionSlugs = ['profil-program', 'tujuan', 'visi-misi', 'informasi-pkl', 'informasi-magang', 'persyaratan-pkl', 'persyaratan-magang', 'alur-pendaftaran'];
 $cmsPages = q_all(
     'SELECT slug, updated_at FROM pages
-     WHERE status = "published" AND slug <> ""
+     WHERE status = $$published$$ AND slug <> $$$$
        AND slug NOT IN (' . implode(',', array_fill(0, count($sectionSlugs), '?')) . ')
      ORDER BY title ASC',
     $sectionSlugs

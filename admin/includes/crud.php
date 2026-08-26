@@ -92,13 +92,13 @@ function toggle_status(string $table, string $titleCol, string $label): void
     if (!array_key_exists($table, $hasPub)) {
         $hasPub[$table] = (bool) q_one(
             "SELECT COUNT(*) n FROM information_schema.columns
-             WHERE table_schema = DATABASE() AND table_name = ? AND column_name = 'published_at'",
+             WHERE table_schema = current_database() AND table_name = ? AND column_name = 'published_at'",
             [$table]
         )['n'];
     }
     if ($hasPub[$table]) {
         $ok = q_exec(
-            "UPDATE $table SET status=?, published_at = IF(? = 'published', COALESCE(published_at, NOW()), published_at) WHERE id=?",
+            "UPDATE $table SET status=?, published_at = CASE WHEN ? = 'published' THEN COALESCE(published_at, NOW()) ELSE published_at END WHERE id=?",
             [$new, $new, $id]
         );
     } else {
