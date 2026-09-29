@@ -15,7 +15,7 @@ $breadcrumbs = [
 $perPage = 12;
 $q = get_val('q');
 
-$where  = ['status = $$published$$'];
+$where  = ['status = \'published\''];
 $params = [];
 if ($q !== '') {
     $where[] = '(name LIKE ? OR institution LIKE ? OR major LIKE ? OR CAST(year AS CHAR) LIKE ?)';

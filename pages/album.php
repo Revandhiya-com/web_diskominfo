@@ -14,7 +14,7 @@ $album = q_one(
             a.participants, a.category_id, a.cover_image, c.name AS category_name
      FROM albums a
      LEFT JOIN album_categories c ON c.id = a.category_id
-     WHERE a.status = $$published$$ AND a.slug = ?',
+     WHERE a.status = \'published\' AND a.slug = ?',
     [$slug]
 );
 
@@ -53,11 +53,11 @@ $totalPhotos = count(array_filter($photos, fn ($p) => ($p['media_type'] ?? 'imag
 $totalVideos = count($photos) - $totalPhotos;
 
 $relatedBase = 'SELECT a.id, a.title, a.slug, a.event_date, a.location, a.cover_image, c.name AS category_name,
-            (SELECT COUNT(*) FROM photos p WHERE p.album_id = a.id AND p.media_type = $$image$$) AS photo_count,
-            (SELECT COUNT(*) FROM photos p WHERE p.album_id = a.id AND p.media_type = $$video$$) AS video_count
+            (SELECT COUNT(*) FROM photos p WHERE p.album_id = a.id AND p.media_type = \'image\') AS photo_count,
+            (SELECT COUNT(*) FROM photos p WHERE p.album_id = a.id AND p.media_type = \'video\') AS video_count
      FROM albums a
      LEFT JOIN album_categories c ON c.id = a.category_id
-     WHERE a.status = $$published$$ AND a.id <> ?';
+     WHERE a.status = \'published\' AND a.id <> ?';
 $relatedWhere = empty($album['category_id'])
     ? (int) $album['id']
     : [(int) $album['id'], (int) $album['category_id']];

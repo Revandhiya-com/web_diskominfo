@@ -23,7 +23,7 @@ $kategori = get_val('kategori'); // slug kategori
 /* Kategori untuk filter (dari database) */
 $categories = q_all('SELECT id, name, slug FROM news_categories ORDER BY name ASC');
 
-$where  = ['n.status = $$published$$'];
+$where  = ['n.status = \'published\''];
 $params = [];
 if ($q !== '') {
     $where[] = '(n.title LIKE ? OR n.excerpt LIKE ? OR n.content LIKE ?)';

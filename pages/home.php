@@ -118,27 +118,15 @@ $hasThumb = function (string $dir, ?string $file): bool {
 <!-- ============ 2. HERO ============ -->
 <section class="dp-hero" aria-labelledby="hero-title">
     <div class="container">
-        <div class="row g-4 align-items-center">
-            <div class="col-lg-8">
-                <span class="dp-hero-eyebrow"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Portal Informasi Resmi</span>
+        <div class="row align-items-center justify-content-center text-center py-3">
+            <div class="col-lg-10">
+                <span class="dp-hero-eyebrow mb-3 d-inline-block"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Portal Informasi Resmi</span>
                 <h1 id="hero-title"><?= e($heroTitle) ?></h1>
                 <p class="dp-hero-subtitle"><?= e($heroSubtitle) ?></p>
-                <p class="dp-hero-desc"><?= e($heroDesc) ?></p>
-                <div class="dp-hero-actions">
+                <p class="dp-hero-desc mx-auto" style="max-width: 760px;"><?= e($heroDesc) ?></p>
+                <div class="dp-hero-actions d-flex flex-wrap justify-content-center gap-3">
                     <a class="btn dp-btn-gold btn-lg" href="<?= e(base_url($heroBtn1['link'])) ?>"><i class="bi bi-briefcase" aria-hidden="true"></i> <?= e($heroBtn1['label']) ?></a>
                     <a class="btn dp-btn-light-outline btn-lg" href="<?= e(base_url($heroBtn2['link'])) ?>"><i class="bi bi-mortarboard" aria-hidden="true"></i> <?= e($heroBtn2['label']) ?></a>
-                </div>
-            </div>
-            <div class="col-lg-4 d-none d-lg-block">
-                <div class="dp-hero-panel">
-                    <div class="dp-hero-panel-title"><i class="bi bi-compass" aria-hidden="true"></i> Pintasan</div>
-                    <ul class="dp-hero-list">
-                        <li><a href="<?= e(base_url('?page=layanan#alur')) ?>"><i class="bi bi-signpost-2" aria-hidden="true"></i> Alur Pendaftaran</a></li>
-                        <li><a href="<?= e(base_url('?page=layanan#persyaratan')) ?>"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> Persyaratan PKL</a></li>
-                        <li><a href="<?= e(base_url('?page=layanan#persyaratan')) ?>"><i class="bi bi-file-earmark-text" aria-hidden="true"></i> Persyaratan Magang</a></li>
-                        <li><a href="<?= e(base_url('?page=agenda')) ?>"><i class="bi bi-calendar2-week" aria-hidden="true"></i> Jadwal Kegiatan</a></li>
-                        <li><a href="<?= e(base_url('?page=dokumen')) ?>"><i class="bi bi-download" aria-hidden="true"></i> Dokumen Pendukung</a></li>
-                    </ul>
                 </div>
             </div>
         </div>

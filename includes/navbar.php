@@ -82,13 +82,8 @@ $siteTagline = setting('site_tagline', 'Portal Informasi PKL & Magang');
                         </ul>
                     </li>
 
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dp-nav-link dropdown-toggle" href="<?= e(base_url('?page=berita')) ?>" role="button" data-bs-toggle="dropdown" aria-expanded="false">Berita</a>
-                        <ul class="dropdown-menu dp-dropdown">
-                            <li><a class="dropdown-item" href="<?= e(base_url('?page=berita')) ?>">Berita Terbaru</a></li>
-                            <li><a class="dropdown-item" href="<?= e(base_url('?page=berita&kategori=kegiatan')) ?>">Kegiatan</a></li>
-                            <li><a class="dropdown-item" href="<?= e(base_url('?page=berita&kategori=karya')) ?>">Karya</a></li>
-                        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link dp-nav-link <?= nav_active('berita') ?>" href="<?= e(base_url('?page=berita')) ?>">Berita</a>
                     </li>
 
                     <li class="nav-item">
@@ -103,11 +98,9 @@ $siteTagline = setting('site_tagline', 'Portal Informasi PKL & Magang');
                         <a class="nav-link dp-nav-link dropdown-toggle" href="<?= e(base_url('?page=dokumentasi')) ?>" role="button" data-bs-toggle="dropdown" aria-expanded="false">Dokumentasi</a>
                         <ul class="dropdown-menu dp-dropdown">
                             <li><a class="dropdown-item" href="<?= e(base_url('?page=dokumentasi')) ?>">Dokumentasi Terbaru</a></li>
-                            <li><a class="dropdown-item" href="<?= e(base_url('?page=album')) ?>">Album</a></li>
+                            <li><a class="dropdown-item" href="<?= e(base_url('?page=album')) ?>">Album Foto</a></li>
                             <li><a class="dropdown-item" href="<?= e(base_url('?page=video')) ?>">Video Kegiatan</a></li>
                             <li><a class="dropdown-item" href="<?= e(base_url('?page=karya')) ?>">Karya Peserta</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="<?= e(base_url('?page=dokumentasi')) ?>">Arsip &amp; Filter</a></li>
                         </ul>
                     </li>
 
@@ -115,10 +108,8 @@ $siteTagline = setting('site_tagline', 'Portal Informasi PKL & Magang');
                         <a class="nav-link dp-nav-link dropdown-toggle" href="<?= e(base_url('?page=pengumuman')) ?>" role="button" data-bs-toggle="dropdown" aria-expanded="false">Informasi</a>
                         <ul class="dropdown-menu dp-dropdown">
                             <li><a class="dropdown-item" href="<?= e(base_url('?page=pengumuman')) ?>">Pengumuman</a></li>
+                            <li><a class="dropdown-item" href="<?= e(base_url('?page=dokumen')) ?>">Dokumen Pendukung</a></li>
                             <li><a class="dropdown-item" href="<?= e(base_url('?page=faq')) ?>">FAQ</a></li>
-                            <li><a class="dropdown-item" href="<?= e(base_url('?page=agenda')) ?>">Jadwal</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="<?= e(base_url('?page=dokumen')) ?>">Dokumen</a></li>
                         </ul>
                     </li>
 

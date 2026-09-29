@@ -13,6 +13,6 @@ define('DB_DRIVER',   getenv('DB_DRIVER')   ?: 'mysql');
 define('DB_HOST',     getenv('DB_HOST')     ?: '127.0.0.1');
 define('DB_PORT',     getenv('DB_PORT')     ?: (DB_DRIVER === 'pgsql' ? '5432' : '3306'));
 define('DB_NAME',     getenv('DB_NAME')     ?: (DB_DRIVER === 'pgsql' ? 'postgres' : 'diskominfo_pkl'));
-define('DB_USER',     getenv('DB_USER')     ?: (DB_DRIVER === 'pgsql' ? 'postgres' : 'diskominfo_pkl'));
-define('DB_PASS',     getenv('DB_PASS')     ?: '2AwRrVkhL6swgK9ut4Dd');
+define('DB_USER',     getenv('DB_USER')     ?: (DB_DRIVER === 'pgsql' ? 'postgres' : 'root'));
+define('DB_PASS',     getenv('DB_PASS')     ?: '');
 define('DB_CHARSET',  getenv('DB_CHARSET')  ?: 'utf8mb4');

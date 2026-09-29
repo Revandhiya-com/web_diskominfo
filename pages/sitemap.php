@@ -15,7 +15,7 @@ $news = q_all(
     'SELECT n.slug, n.title, n.published_at, c.name AS category_name
      FROM news n
      LEFT JOIN news_categories c ON c.id = n.category_id
-     WHERE n.status = $$published$$
+     WHERE n.status = \'published\'
      ORDER BY n.published_at DESC
      LIMIT 100'
 );
@@ -23,7 +23,7 @@ $news = q_all(
 $albums = q_all(
     'SELECT a.slug, a.title, a.event_date
      FROM albums a
-     WHERE a.status = $$published$$
+     WHERE a.status = \'published\'
      ORDER BY a.created_at DESC
      LIMIT 100'
 );
@@ -34,7 +34,7 @@ $sectionSlugs = ['profil-program', 'tujuan', 'visi-misi', 'informasi-pkl', 'info
 $excludedSlugs = array_merge($staticSlugs, $sectionSlugs);
 $cmsPages = q_all(
     'SELECT slug, title FROM pages
-     WHERE status = $$published$$ AND slug NOT IN (' . implode(',', array_fill(0, count($excludedSlugs), '?')) . ')
+     WHERE status = \'published\' AND slug NOT IN (' . implode(',', array_fill(0, count($excludedSlugs), '?')) . ')
      ORDER BY title ASC',
     $excludedSlugs
 );

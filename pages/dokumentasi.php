@@ -24,7 +24,7 @@ $categories = q_all('SELECT id, name, slug FROM album_categories ORDER BY name A
 $years = q_all(
     'SELECT DISTINCT EXTRACT(YEAR FROM event_date) AS tahun
      FROM albums
-     WHERE status = $$published$$ AND event_date IS NOT NULL
+     WHERE status = \'published\' AND event_date IS NOT NULL
      ORDER BY tahun DESC'
 );
 
@@ -34,7 +34,7 @@ $bulanList = [
 ];
 
 /* Bangun filter */
-$where  = ['a.status = $$published$$'];
+$where  = ['a.status = \'published\''];
 $params = [];
 if ($q !== '') {
     $where[] = '(a.title LIKE ? OR a.description LIKE ? OR a.location LIKE ?)';

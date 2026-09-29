@@ -15,7 +15,7 @@ $breadcrumbs = [
 $upcoming = q_all(
     'SELECT id, title, description, location, source_url, start_datetime, end_datetime
      FROM agendas
-     WHERE status = $$published$$ AND start_datetime >= NOW()
+     WHERE status = \'published\' AND start_datetime >= NOW()
      ORDER BY start_datetime ASC'
 );
 
@@ -23,7 +23,7 @@ $upcoming = q_all(
 $past = q_all(
     'SELECT id, title, description, location, source_url, start_datetime, end_datetime
      FROM agendas
-     WHERE status = $$published$$ AND start_datetime < NOW()
+     WHERE status = \'published\' AND start_datetime < NOW()
      ORDER BY start_datetime DESC'
 );
 

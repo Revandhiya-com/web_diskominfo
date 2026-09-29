@@ -12,7 +12,7 @@ if ($slug === '') {
 $alumni = q_one(
     'SELECT id, name, slug, photo, type, institution, major, start_date, end_date, year, division, description
      FROM alumni
-     WHERE status = $$published$$ AND slug = ?',
+     WHERE status = \'published\' AND slug = ?',
     [$slug]
 );
 

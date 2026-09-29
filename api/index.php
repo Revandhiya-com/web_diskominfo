@@ -42,7 +42,7 @@ if ($page === '') {
 $pageFile = BASE_PATH . '/pages/' . $page . '.php';
 $cmsPage = null;
 if (!is_file($pageFile)) {
-    $row = q_one('SELECT slug, title, content, source_url FROM pages WHERE slug = ? AND status = $$published$$', [$page]);
+    $row = q_one('SELECT slug, title, content, source_url FROM pages WHERE slug = ? AND status = \'published\'', [$page]);
     if ($row) {
         $cmsPage = $row;
         $pageFile = BASE_PATH . '/pages/cms.php';

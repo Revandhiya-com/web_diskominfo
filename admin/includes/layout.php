@@ -51,7 +51,8 @@ function admin_layout_start(string $title, string $active): void
         </div>
         <nav class="admin-nav">
             <?php foreach ($menu as $key => $item): ?>
-                <a class="admin-nav-item <?= $active === $key ? 'active' : '' ?>" href="<?= e(base_url('admin/' . $key . '.php')) ?>">
+                <?php $url = ($key === 'dashboard') ? 'admin/index.php' : ('admin/' . $key . '.php'); ?>
+                <a class="admin-nav-item <?= $active === $key ? 'active' : '' ?>" href="<?= e(base_url($url)) ?>">
                     <i class="bi <?= e($item['icon']) ?>"></i><span><?= e($item['label']) ?></span>
                 </a>
             <?php endforeach; ?>

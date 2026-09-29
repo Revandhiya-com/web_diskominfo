@@ -39,7 +39,7 @@ if (is_post()) {
         $error = 'Isi username/email dan password.';
     } else {
         $recent = (int) (q_one(
-            'SELECT COUNT(*) AS n FROM login_attempts WHERE username = ? AND ip = ? AND attempted_at > (NOW() - (? * INTERVAL $$1 second$$))',
+            'SELECT COUNT(*) AS n FROM login_attempts WHERE username = ? AND ip = ? AND attempted_at > (NOW() - (? * INTERVAL 1 SECOND))',
             [$login, $ip, $windowSec]
         )['n'] ?? 0);
 
