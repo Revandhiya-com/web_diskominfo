@@ -1,14 +1,21 @@
 {
   "version": 2,
   "functions": {
-    "**/*.php": {
-      "runtime": "vercel-php@0.9.0"
+    "api/index.php": {
+      "runtime": "vercel-php@0.9.0",
+      "includeFiles": [
+        "admin/**",
+        "config/**",
+        "database/**",
+        "helpers/**",
+        "includes/**",
+        "pages/**",
+        "assets/**",
+        "uploads/**"
+      ]
     }
   },
-  "routes": [
-    { "src": "/admin/?$", "dest": "/admin/index.php" },
-    { "src": "/admin/(.*)", "dest": "/admin/$1" },
-    { "src": "/(assets|uploads)/(.*)", "dest": "/$1/$2" },
-    { "src": "/(.*)", "dest": "/index.php" }
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api/index.php" }
   ]
 }
