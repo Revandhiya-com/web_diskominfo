@@ -1,7 +1,7 @@
 <?php
 /**
  * Vercel entry point — front controller untuk Vercel.
- * Mendukung routing halaman publik, modul /admin, dan static assets.
+ * Mendukung routing halaman publik, modul /admin (dengan/tanpa .php), dan static assets.
  */
 define('BASE_PATH', dirname(__DIR__));
 
@@ -34,11 +34,14 @@ if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|txt|x
     }
 }
 
-// 2. Admin routing: routing otomatis untuk modul /admin
+// 2. Admin routing: mendukung /admin, /admin/, /admin/login, /admin/login.php
 if (strpos($uri, '/admin') === 0) {
     $target = BASE_PATH . $uri;
     if (is_dir($target)) {
         $target = rtrim($target, '/') . '/index.php';
+    }
+    if (!is_file($target) && is_file($target . '.php')) {
+        $target = $target . '.php';
     }
     if (is_file($target)) {
         require $target;
