@@ -1,19 +1,27 @@
 <?php
 /**
- * Bridge route untuk Halaman Admin Vercel
+ * Bridge route untuk Panel Admin — dipanggil oleh router utama via ?page=admin
+ * BASE_PATH sudah didefinisikan oleh index.php / api/index.php
  */
 if (!defined('ADMIN_PUBLIC')) {
     define('ADMIN_PUBLIC', true);
 }
 
-$loginFile = dirname(__DIR__) . '/admin/login.php';
+// Hentikan output frontend (header, footer) agar tidak double render
+// Karena halaman ini di-require dari dalam ob_start() di router,
+// kita perlu flush buffer dan langsung output dari admin/login.php
+ob_end_clean();
+
+$loginFile = BASE_PATH . '/admin/login.php';
 if (is_file($loginFile)) {
     require $loginFile;
     exit;
 } else {
-    echo '<div style="font-family:sans-serif;padding:30px;max-width:600px;margin:50px auto;">';
-    echo '<h2>File Admin Login Tidak Ditemukan</h2>';
-    echo '<p>Path: ' . htmlspecialchars($loginFile, ENT_QUOTES, 'UTF-8') . '</p>';
+    http_response_code(500);
+    echo '<div style="font-family:sans-serif;padding:30px;max-width:600px;margin:50px auto;background:#fff;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.1);">';
+    echo '<h2 style="color:#d9534f">Konfigurasi Server Bermasalah</h2>';
+    echo '<p>File <code>admin/login.php</code> tidak ditemukan di path: <code>' . htmlspecialchars($loginFile, ENT_QUOTES, 'UTF-8') . '</code></p>';
+    echo '<p>Pastikan Environment Variables Vercel sudah diisi dan deploy sudah selesai.</p>';
     echo '</div>';
     exit;
 }
