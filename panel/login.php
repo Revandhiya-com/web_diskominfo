@@ -104,7 +104,7 @@ if (is_post()) {
             <div class="alert alert-danger py-2 small"><?= e($error) ?></div>
         <?php endif; ?>
 
-        <form method="post" action="<?= e(base_url('panel/login.php')) ?>" autocomplete="off">
+        <form method="post" action="<?= e(base_url('panel/')) ?>" autocomplete="off">
             <?= csrf_field() ?>
             <div class="mb-3">
                 <label class="form-label-admin" for="login">Username / Email</label>
