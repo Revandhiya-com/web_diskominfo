@@ -6,7 +6,8 @@
       "includeFiles": "**"
     }
   },
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/index.php" }
+  "routes": [
+    { "src": "^/assets/(.*)", "dest": "/assets/$1" },
+    { "src": "^/(.*)", "dest": "/api/index.php" }
   ]
 }
