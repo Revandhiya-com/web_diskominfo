@@ -3,9 +3,7 @@
  * Bridge route untuk Panel Admin — dipanggil oleh router utama via ?page=admin
  * BASE_PATH sudah didefinisikan oleh index.php / api/index.php
  */
-if (!defined('ADMIN_PUBLIC')) {
-    define('ADMIN_PUBLIC', true);
-}
+// ADMIN_PUBLIC sudah didefinisikan di dalam admin/login.php — jangan duplikat.
 
 // Hentikan output frontend (header, footer) agar tidak double render
 // Karena halaman ini di-require dari dalam ob_start() di router,
