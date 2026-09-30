@@ -5,7 +5,7 @@
 -- ============================================================
 
 -- Reset tabel jika sudah ada sebelumnya
-DROP TABLE IF EXISTS activity_logs, login_attempts, karya, videos, settings, announcements, agendas, faqs, messages, pages, documents, document_categories, photos, albums, album_categories, alumni, news_photos, news, news_categories, users CASCADE;
+DROP TABLE IF EXISTS activity_logs, login_attempts, karya, videos, settings, contact_messages, messages, pages, faqs, documents, document_categories, announcements, agendas, photos, albums, album_categories, alumni, news_photos, news, news_categories, users CASCADE;
 
 -- ------------------------------------------------------------
 -- USERS — pengguna admin/editor
