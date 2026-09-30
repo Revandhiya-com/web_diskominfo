@@ -38,39 +38,46 @@ if (is_post()) {
     if ($login === '' || $password === '') {
         $error = 'Isi username/email dan password.';
     } else {
-        $recent = (int) (q_one(
-            'SELECT COUNT(*) AS n FROM login_attempts WHERE username = ? AND ip = ? AND attempted_at > (NOW() - (? * INTERVAL 1 SECOND))',
-            [$login, $ip, $windowSec]
-        )['n'] ?? 0);
+        try {
+            // Rate limiting — query kompatibel MySQL & PostgreSQL
+            $cutoff = date('Y-m-d H:i:s', time() - $windowSec);
+            $recent = (int) (q_one(
+                'SELECT COUNT(*) AS n FROM login_attempts WHERE username = ? AND ip = ? AND attempted_at > ?',
+                [$login, $ip, $cutoff]
+            )['n'] ?? 0);
 
-        if ($recent >= $maxAttempts) {
-            $error = 'Terlalu banyak percobaan login. Coba lagi ' . (int) ceil(($windowSec / 60)) . ' menit lagi.';
-        } else {
-            $user = q_one(
-                'SELECT id, name, username, email, password, role, is_active, remember_token FROM users WHERE (username = ? OR email = ?) AND is_active = 1',
-                [$login, $login]
-            );
+            if ($recent >= $maxAttempts) {
+                $error = 'Terlalu banyak percobaan login. Coba lagi ' . (int) ceil(($windowSec / 60)) . ' menit lagi.';
+            } else {
+                $user = q_one(
+                    'SELECT id, name, username, email, password, role, is_active, remember_token FROM users WHERE (username = ? OR email = ?) AND is_active = 1',
+                    [$login, $login]
+                );
 
-            if ($user && password_verify($password, $user['password'])) {
-                q_exec('DELETE FROM login_attempts WHERE username = ? AND ip = ?', [$login, $ip]);
-                q_exec('UPDATE users SET last_login_at = NOW() WHERE id = ?', [(int) $user['id']]);
+                if ($user && password_verify($password, $user['password'])) {
+                    q_exec('DELETE FROM login_attempts WHERE username = ? AND ip = ?', [$login, $ip]);
+                    q_exec('UPDATE users SET last_login_at = NOW() WHERE id = ?', [(int) $user['id']]);
 
-                if ($remember) {
-                    $raw = bin2hex(random_bytes(32));
-                    q_exec('UPDATE users SET remember_token = ? WHERE id = ?', [hash('sha256', $raw), (int) $user['id']]);
-                    setcookie('dp_remember', (int) $user['id'] . '.' . $raw, time() + 30 * 86400, '/', '', false, true);
-                } else {
-                    q_exec('UPDATE users SET remember_token = NULL WHERE id = ?', [(int) $user['id']]);
+                    if ($remember) {
+                        $raw = bin2hex(random_bytes(32));
+                        q_exec('UPDATE users SET remember_token = ? WHERE id = ?', [hash('sha256', $raw), (int) $user['id']]);
+                        setcookie('dp_remember', (int) $user['id'] . '.' . $raw, time() + 30 * 86400, '/', '', false, true);
+                    } else {
+                        q_exec('UPDATE users SET remember_token = NULL WHERE id = ?', [(int) $user['id']]);
+                    }
+
+                    unset($user['password'], $user['remember_token']);
+                    login_user($user);
+                    log_activity('login', 'auth', (int) $user['id'], 'Login berhasil');
+                    redirect('panel/index.php');
                 }
 
-                unset($user['password'], $user['remember_token']);
-                login_user($user);
-                log_activity('login', 'auth', (int) $user['id'], 'Login berhasil');
-                redirect('panel/index.php');
+                q_exec('INSERT INTO login_attempts (username, ip) VALUES (?, ?)', [$login, $ip]);
+                $error = 'Username/email atau password salah.';
             }
-
-            q_exec('INSERT INTO login_attempts (username, ip) VALUES (?, ?)', [$login, $ip]);
-            $error = 'Username/email atau password salah.';
+        } catch (Throwable $ex) {
+            // Tampilkan pesan error database agar mudah didiagnosis
+            $error = 'Kesalahan server: ' . htmlspecialchars($ex->getMessage(), ENT_QUOTES, 'UTF-8');
         }
     }
 }
