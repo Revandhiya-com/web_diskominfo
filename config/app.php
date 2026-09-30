@@ -18,9 +18,8 @@ define('APP_BASE_URL', null);
 // Zona waktu aplikasi (semua timestamp disimpan & ditampilkan dalam zona ini)
 define('APP_TIMEZONE', 'Asia/Jakarta');
 
-// Mode debug: true = tampilkan detail error (HANYA untuk development).
-// Wajib false sebelum dipublikasikan.
-define('APP_DEBUG', false);
+// Mode debug: true = tampilkan detail error.
+define('APP_DEBUG', getenv('APP_DEBUG') ? (getenv('APP_DEBUG') === 'true' || getenv('APP_DEBUG') === '1') : false);
 
 // Versi aset untuk cache busting (ubah saat memperbarui CSS/JS)
 define('APP_ASSET_VERSION', '1.8.0');

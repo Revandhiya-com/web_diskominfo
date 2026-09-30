@@ -22,12 +22,18 @@ if (APP_DEBUG) {
     ini_set('display_errors', '0');
 }
 
-/* Error tidak pernah bocor ke pengguna — dicatat ke logs/app.log saja. */
+/* Error tidak pernah bocor ke pengguna kecuali pesan umum/debug. */
 set_exception_handler(function (Throwable $e): void {
     log_error('Admin uncaught exception', $e);
     http_response_code(500);
     if (!headers_sent()) {
-        header('Location: ' . base_url('admin/index.php'));
+        echo '<div style="font-family:sans-serif;padding:30px;max-width:600px;margin:50px auto;background:#fff;border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,0.1);">';
+        echo '<h2 style="color:#d9534f;margin-top:0;">Terjadi Kesalahan Server (Admin)</h2>';
+        echo '<p style="color:#333;font-weight:bold;">' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . '</p>';
+        echo '<p style="font-size:0.9rem;color:#666;">Jika Anda baru memasang di Vercel, pastikan <strong>Environment Variables</strong> database (<code>DB_DRIVER</code>, <code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_NAME</code>, <code>DB_USER</code>, <code>DB_PASS</code>) sudah diisi di Vercel Project Settings.</p>';
+        echo '<hr style="border:0;border-top:1px solid #eee;margin:20px 0;">';
+        echo '<a href="' . htmlspecialchars(base_url('admin/login.php'), ENT_QUOTES, 'UTF-8') . '" style="color:#0070f3;text-decoration:none;">&laquo; Kembali ke Halaman Login</a>';
+        echo '</div>';
     }
     exit;
 });
