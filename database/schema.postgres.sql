@@ -4,6 +4,9 @@
 -- Jalankan di Supabase SQL Editor (Dashboard -> SQL -> New query).
 -- ============================================================
 
+-- Reset tabel jika sudah ada sebelumnya
+DROP TABLE IF EXISTS activity_logs, login_attempts, karya, videos, settings, announcements, agendas, faqs, messages, pages, documents, document_categories, photos, albums, album_categories, alumni, news_photos, news, news_categories, users CASCADE;
+
 -- ------------------------------------------------------------
 -- USERS — pengguna admin/editor
 -- ------------------------------------------------------------
