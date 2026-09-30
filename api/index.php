@@ -26,6 +26,12 @@ function resolve_app_file(string $relativePath): ?string {
 
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 
+// 0. Handle POST login auth — ?_auth=1 — sebelum routing apapun agar WAF tidak memblokir
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_GET['_auth'])) {
+    $f = resolve_app_file('/panel/login.php');
+    if ($f) { require $f; exit; }
+}
+
 // 1. Static file handling
 if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|txt|xml)$/i', $uri)) {
     $staticFile = resolve_app_file($uri);
