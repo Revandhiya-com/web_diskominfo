@@ -4,13 +4,17 @@
  * Auth publik (login.php) mendefinisikan ADMIN_PUBLIC sebelum include.
  */
 
-define('BASE_PATH', dirname(__DIR__, 2));
+defined('BASE_PATH') || define('BASE_PATH', dirname(__DIR__, 2));
 
-require BASE_PATH . '/config/app.php';
-require BASE_PATH . '/config/database.php';
-require BASE_PATH . '/helpers/functions.php';
-require BASE_PATH . '/helpers/security.php';
-require BASE_PATH . '/helpers/auth.php';
+function_exists('base_url') || require BASE_PATH . '/config/app.php';
+function_exists('base_url') || require BASE_PATH . '/config/database.php';
+function_exists('base_url') || require BASE_PATH . '/helpers/functions.php';
+function_exists('start_secure_session') || require BASE_PATH . '/helpers/security.php';
+function_exists('is_logged_in') || require BASE_PATH . '/helpers/auth.php';
+
+if (!defined('APP_TIMEZONE')) {
+    require BASE_PATH . '/config/app.php';
+}
 
 date_default_timezone_set(APP_TIMEZONE);
 
