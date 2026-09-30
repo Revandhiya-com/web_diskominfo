@@ -367,3 +367,10 @@ CREATE TRIGGER trg_videos_updated_at BEFORE UPDATE ON videos
     FOR EACH ROW EXECUTE FUNCTION set_updated_at();
 CREATE TRIGGER trg_karya_updated_at BEFORE UPDATE ON karya
     FOR EACH ROW EXECUTE FUNCTION set_updated_at();
+
+-- ------------------------------------------------------------
+-- SEED DATA AWAL — USER ADMIN (username: admin / password: demo1234)
+-- ------------------------------------------------------------
+INSERT INTO users (name, username, email, password, role, is_active)
+VALUES ('Admin Portal', 'admin', 'admin@example.invalid', '$2y$10$pjNsXPHJ/45k.zafLr9OteNX9KqEsUwssAUiCQkUvxfmb21Rjunh6', 'admin', 1)
+ON CONFLICT (username) DO NOTHING;
