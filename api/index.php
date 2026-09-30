@@ -1,16 +1,37 @@
 <?php
 /**
  * Vercel entry point — front controller untuk Vercel.
- * Mendukung routing halaman publik, modul /admin, alias /panel, /login, /kelola, serta ?page=admin / ?page=login.
+ * Menggunakan resolve_app_file untuk penemuan jalur file yang 100% presisi di Vercel Lambda.
  */
 define('BASE_PATH', dirname(__DIR__));
+
+function resolve_app_file(string $relativePath): ?string {
+    $bases = [
+        BASE_PATH,
+        dirname(BASE_PATH),
+        $_SERVER['DOCUMENT_ROOT'] ?? '',
+        '/var/task',
+        '/var/task/api',
+        dirname(__DIR__),
+        __DIR__,
+    ];
+    $cleanPath = '/' . ltrim($relativePath, '/');
+    foreach ($bases as $b) {
+        if (!$b) continue;
+        $file = rtrim(str_replace('\\', '/', $b), '/') . $cleanPath;
+        if (is_file($file)) {
+            return $file;
+        }
+    }
+    return null;
+}
 
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 
 // 1. Static file handling jika diakses lewat Vercel rewrite
 if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|txt|xml)$/i', $uri)) {
-    $staticFile = BASE_PATH . $uri;
-    if (is_file($staticFile)) {
+    $staticFile = resolve_app_file($uri);
+    if ($staticFile) {
         $mimeTypes = [
             'css'   => 'text/css',
             'js'    => 'application/javascript',
@@ -34,16 +55,16 @@ if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|txt|x
     }
 }
 
-// 2. Query parameter shortcut: ?page=admin / ?page=login / ?page=panel
+// 2. Query parameter shortcut: ?page=admin / ?page=login / ?page=panel / ?page=kelola
 if (isset($_GET['page']) && in_array(strtolower($_GET['page']), ['admin', 'login', 'panel', 'kelola'], true)) {
-    $targetFile = BASE_PATH . '/admin/login.php';
-    if (is_file($targetFile)) {
+    $targetFile = resolve_app_file('/admin/login.php');
+    if ($targetFile) {
         require $targetFile;
         exit;
     }
 }
 
-// 3. Admin & Panel routing: mendukung /admin, /panel, /login, /kelola untuk menghindari blokir WAF /admin
+// 3. Admin & Panel routing: mendukung /admin, /panel, /login, /kelola
 $adminMappedUri = $uri;
 if (strpos($uri, '/panel') === 0) {
     $sub = substr($uri, 6);
@@ -57,18 +78,15 @@ if (strpos($uri, '/panel') === 0) {
 
 if (strpos($adminMappedUri, '/admin') === 0) {
     $candidates = [
-        BASE_PATH . $adminMappedUri,
-        BASE_PATH . $adminMappedUri . '.php',
-        rtrim(BASE_PATH, '/') . '/admin/index.php',
+        $adminMappedUri,
+        $adminMappedUri . '.php',
+        rtrim($adminMappedUri, '/') . '/index.php',
     ];
 
-    if (is_dir(BASE_PATH . $adminMappedUri)) {
-        array_unshift($candidates, rtrim(BASE_PATH . $adminMappedUri, '/') . '/index.php');
-    }
-
     foreach ($candidates as $cand) {
-        if (is_file($cand)) {
-            require $cand;
+        $file = resolve_app_file($cand);
+        if ($file) {
+            require $file;
             exit;
         }
     }
