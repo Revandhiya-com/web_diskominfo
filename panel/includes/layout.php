@@ -51,7 +51,7 @@ function admin_layout_start(string $title, string $active): void
         </div>
         <nav class="admin-nav">
             <?php foreach ($menu as $key => $item): ?>
-                <?php $url = ($key === 'dashboard') ? 'admin/index.php' : ('admin/' . $key . '.php'); ?>
+                <?php $url = ($key === 'dashboard') ? 'panel/index.php' : ('panel/' . $key . '.php'); ?>
                 <a class="admin-nav-item <?= $active === $key ? 'active' : '' ?>" href="<?= e(base_url($url)) ?>">
                     <i class="bi <?= e($item['icon']) ?>"></i><span><?= e($item['label']) ?></span>
                 </a>
@@ -67,7 +67,7 @@ function admin_layout_start(string $title, string $active): void
             <div class="d-flex align-items-center gap-3">
                 <a class="btn btn-sm btn-outline-secondary" href="<?= e(base_url()) ?>" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right me-1"></i>Lihat Situs</a>
                 <span class="admin-user"><i class="bi bi-person-circle me-1"></i><?= e($user['name'] ?? 'Admin') ?></span>
-                <form method="post" action="<?= e(base_url('admin/logout.php')) ?>" class="d-inline">
+                <form method="post" action="<?= e(base_url('panel/logout.php')) ?>" class="d-inline">
                     <?= csrf_field() ?>
                     <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-box-arrow-right me-1"></i>Keluar</button>
                 </form>

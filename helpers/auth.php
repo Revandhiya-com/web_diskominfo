@@ -20,7 +20,7 @@ function current_user(): ?array
 function require_login(): void
 {
     if (!is_logged_in()) {
-        redirect('admin/login.php');
+        redirect('panel/login.php');
     }
 }
 

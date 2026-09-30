@@ -36,7 +36,7 @@ set_exception_handler(function (Throwable $e): void {
         echo '<p style="color:#333;font-weight:bold;">' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8') . '</p>';
         echo '<p style="font-size:0.9rem;color:#666;">Jika Anda baru memasang di Vercel, pastikan <strong>Environment Variables</strong> database (<code>DB_DRIVER</code>, <code>DB_HOST</code>, <code>DB_PORT</code>, <code>DB_NAME</code>, <code>DB_USER</code>, <code>DB_PASS</code>) sudah diisi di Vercel Project Settings.</p>';
         echo '<hr style="border:0;border-top:1px solid #eee;margin:20px 0;">';
-        echo '<a href="' . htmlspecialchars(base_url('admin/login.php'), ENT_QUOTES, 'UTF-8') . '" style="color:#0070f3;text-decoration:none;">&laquo; Kembali ke Halaman Login</a>';
+        echo '<a href="' . htmlspecialchars(base_url('panel/login.php'), ENT_QUOTES, 'UTF-8') . '" style="color:#0070f3;text-decoration:none;">&laquo; Kembali ke Halaman Login</a>';
         echo '</div>';
     }
     exit;
@@ -44,14 +44,14 @@ set_exception_handler(function (Throwable $e): void {
 
 start_secure_session();
 
-require BASE_PATH . '/admin/includes/crud.php';
-require BASE_PATH . '/admin/includes/upload.php';
+require BASE_PATH . '/panel/includes/crud.php';
+require BASE_PATH . '/panel/includes/upload.php';
 
 if (!defined('ADMIN_PUBLIC')) {
     require_login();
     if ((current_user()['is_active'] ?? 1) != 1) {
         logout_user();
-        redirect('admin/login.php');
+        redirect('panel/login.php');
     }
     if (defined('ADMIN_ONLY')) {
         require_admin();

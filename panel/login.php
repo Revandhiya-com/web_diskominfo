@@ -18,14 +18,14 @@ if (!is_logged_in() && !empty($_COOKIE['dp_remember'])) {
             unset($user['password']);
             login_user($user);
             log_activity('login', 'auth', (int) $user['id'], 'Login otomatis (remember me)');
-            redirect('admin/index.php');
+            redirect('panel/index.php');
         }
         setcookie('dp_remember', '', time() - 42000, '/', '', false, true);
     }
 }
 
 if (is_logged_in()) {
-    redirect('admin/index.php');
+    redirect('panel/index.php');
 }
 
 if (is_post()) {
@@ -66,7 +66,7 @@ if (is_post()) {
                 unset($user['password'], $user['remember_token']);
                 login_user($user);
                 log_activity('login', 'auth', (int) $user['id'], 'Login berhasil');
-                redirect('admin/index.php');
+                redirect('panel/index.php');
             }
 
             q_exec('INSERT INTO login_attempts (username, ip) VALUES (?, ?)', [$login, $ip]);
@@ -104,7 +104,7 @@ if (is_post()) {
             <div class="alert alert-danger py-2 small"><?= e($error) ?></div>
         <?php endif; ?>
 
-        <form method="post" action="<?= e(base_url('admin/login.php')) ?>" autocomplete="off">
+        <form method="post" action="<?= e(base_url('panel/login.php')) ?>" autocomplete="off">
             <?= csrf_field() ?>
             <div class="mb-3">
                 <label class="form-label-admin" for="login">Username / Email</label>

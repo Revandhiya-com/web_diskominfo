@@ -1,19 +1,17 @@
 <?php
 /**
  * Vercel entry point — front controller untuk Vercel.
- * Menggunakan resolve_app_file untuk penemuan jalur file yang 100% presisi di Vercel Lambda.
+ * Folder admin/ sudah direname menjadi panel/ untuk menghindari blokir Vercel WAF.
  */
 define('BASE_PATH', dirname(__DIR__));
 
 function resolve_app_file(string $relativePath): ?string {
     $bases = [
         BASE_PATH,
+        '/var/task/user',
+        '/var/task',
         dirname(BASE_PATH),
         $_SERVER['DOCUMENT_ROOT'] ?? '',
-        '/var/task',
-        '/var/task/api',
-        dirname(__DIR__),
-        __DIR__,
     ];
     $cleanPath = '/' . ltrim($relativePath, '/');
     foreach ($bases as $b) {
@@ -28,7 +26,7 @@ function resolve_app_file(string $relativePath): ?string {
 
 $uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 
-// 1. Static file handling jika diakses lewat Vercel rewrite
+// 1. Static file handling
 if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|txt|xml)$/i', $uri)) {
     $staticFile = resolve_app_file($uri);
     if ($staticFile) {
@@ -55,44 +53,42 @@ if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|txt|x
     }
 }
 
-// 2. Query parameter shortcut: ?page=admin / ?page=login / ?page=panel / ?page=kelola
-if (isset($_GET['page']) && in_array(strtolower($_GET['page']), ['admin', 'login', 'panel', 'kelola'], true)) {
-    $targetFile = resolve_app_file('/admin/login.php');
-    if ($targetFile) {
-        require $targetFile;
+// 2. Panel routing — semua request yang diawali /panel/ dilayani dari folder panel/
+if (strpos($uri, '/panel') === 0) {
+    $sub = substr($uri, 6); // strip '/panel'
+    if ($sub === '' || $sub === '/') {
+        $panelFile = resolve_app_file('/panel/login.php');
+    } else {
+        $candidates = [
+            '/panel' . $sub,
+            '/panel' . $sub . '.php',
+            rtrim('/panel' . $sub, '/') . '/index.php',
+        ];
+        $panelFile = null;
+        foreach ($candidates as $cand) {
+            $f = resolve_app_file($cand);
+            if ($f) { $panelFile = $f; break; }
+        }
+    }
+    if ($panelFile) {
+        require $panelFile;
         exit;
     }
 }
 
-// 3. Admin & Panel routing: mendukung /admin, /panel, /login, /kelola
-$adminMappedUri = $uri;
-if (strpos($uri, '/panel') === 0) {
-    $sub = substr($uri, 6);
-    $adminMappedUri = '/admin' . ($sub === '' || $sub === '/' ? '/login.php' : $sub);
-} elseif ($uri === '/login' || $uri === '/login.php') {
-    $adminMappedUri = '/admin/login.php';
-} elseif (strpos($uri, '/kelola') === 0) {
-    $sub = substr($uri, 7);
-    $adminMappedUri = '/admin' . ($sub === '' || $sub === '/' ? '/login.php' : $sub);
+// 3. /login shortcut
+if ($uri === '/login' || $uri === '/login.php') {
+    $f = resolve_app_file('/panel/login.php');
+    if ($f) { require $f; exit; }
 }
 
-if (strpos($adminMappedUri, '/admin') === 0) {
-    $candidates = [
-        $adminMappedUri,
-        $adminMappedUri . '.php',
-        rtrim($adminMappedUri, '/') . '/index.php',
-    ];
-
-    foreach ($candidates as $cand) {
-        $file = resolve_app_file($cand);
-        if ($file) {
-            require $file;
-            exit;
-        }
-    }
+// 4. Query parameter shortcut: ?page=admin / ?page=panel / ?page=login / ?page=kelola
+if (isset($_GET['page']) && in_array(strtolower($_GET['page']), ['admin', 'login', 'panel', 'kelola'], true)) {
+    $f = resolve_app_file('/panel/login.php');
+    if ($f) { require $f; exit; }
 }
 
-// 4. Frontend routing (Halaman Publik)
+// 5. Frontend routing (Halaman Publik)
 require BASE_PATH . '/config/app.php';
 require BASE_PATH . '/config/database.php';
 require BASE_PATH . '/helpers/functions.php';
@@ -109,7 +105,6 @@ if (APP_DEBUG) {
     ini_set('display_errors', '0');
 }
 
-/* Error tidak pernah bocor ke pengguna — dicatat ke logs/app.log saja. */
 set_exception_handler(function (Throwable $e): void {
     log_error('Uncaught exception', $e);
     http_response_code(500);
@@ -141,7 +136,6 @@ if (!is_file($pageFile)) {
 
 $currentPage = $page;
 
-/* Halaman men-set variabel $pageTitle, $pageDescription, $breadcrumbs, lalu echo kontennya */
 ob_start();
 require $pageFile;
 $pageContent = ob_get_clean();

@@ -16,4 +16,4 @@ if (!verify_csrf($_POST['csrf_token'] ?? null)) {
 log_activity('logout', 'auth', (int) current_user()['id'], 'Logout');
 logout_user();
 setcookie('dp_remember', '', time() - 42000, '/', '', false, true);
-redirect('admin/login.php');
+redirect('panel/login.php');
