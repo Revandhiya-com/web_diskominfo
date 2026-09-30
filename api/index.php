@@ -1,11 +1,52 @@
 <?php
 /**
  * Vercel entry point — front controller untuk Vercel.
- * Berisi logika routing yang sama dengan index.php di root,
- * dengan BASE_PATH disesuaikan (berada satu level di dalam /api).
+ * Mendukung routing halaman publik, modul /admin, dan static assets.
  */
 define('BASE_PATH', dirname(__DIR__));
 
+$uri = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
+
+// 1. Static file handling jika diakses lewat Vercel rewrite
+if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|txt|xml)$/i', $uri)) {
+    $staticFile = BASE_PATH . $uri;
+    if (is_file($staticFile)) {
+        $mimeTypes = [
+            'css'   => 'text/css',
+            'js'    => 'application/javascript',
+            'png'   => 'image/png',
+            'jpg'   => 'image/jpeg',
+            'jpeg'  => 'image/jpeg',
+            'gif'   => 'image/gif',
+            'ico'   => 'image/x-icon',
+            'svg'   => 'image/svg+xml',
+            'woff'  => 'font/woff',
+            'woff2' => 'font/woff2',
+            'ttf'   => 'font/ttf',
+            'pdf'   => 'application/pdf',
+            'txt'   => 'text/plain',
+            'xml'   => 'application/xml',
+        ];
+        $ext = strtolower(pathinfo($staticFile, PATHINFO_EXTENSION));
+        header('Content-Type: ' . ($mimeTypes[$ext] ?? 'application/octet-stream'));
+        readfile($staticFile);
+        exit;
+    }
+}
+
+// 2. Admin routing: routing otomatis untuk modul /admin
+if (strpos($uri, '/admin') === 0) {
+    $target = BASE_PATH . $uri;
+    if (is_dir($target)) {
+        $target = rtrim($target, '/') . '/index.php';
+    }
+    if (is_file($target)) {
+        require $target;
+        exit;
+    }
+}
+
+// 3. Frontend routing (Halaman Publik)
 require BASE_PATH . '/config/app.php';
 require BASE_PATH . '/config/database.php';
 require BASE_PATH . '/helpers/functions.php';
@@ -63,9 +104,6 @@ $pageTitle       = $pageTitle ?? APP_NAME;
 $pageDescription = $pageDescription ?? 'Pusat informasi, layanan, berita, dan dokumentasi kegiatan Praktik Kerja Lapangan dan Magang.';
 $breadcrumbs     = $breadcrumbs ?? [];
 
-/* Canonical URL — halaman bisa men-set $canonicalUrl sendiri (mis. detail berita);
-   jika tidak, dibangun dari parameter penentu konten (kategori/slug/id).
-   Halaman pencarian (search) dan 404 di-noindex sehingga tanpa canonical. */
 $seoNoindex = ($page === 'search' || $page === '404');
 if (!$seoNoindex && !isset($canonicalUrl)) {
     $canonParams = [];
