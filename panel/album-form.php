@@ -18,7 +18,7 @@ $eventDate = $album['event_date'] ?? '';
 $location = $album['location'] ?? '';
 $categoryId = (int) ($album['category_id'] ?? 0);
 $description = $album['description'] ?? '';
-$status = $album['status'] ?? 'draft';
+$status = $album['status'] ?? 'published';
 $coverImage = $album['cover_image'] ?? null;
 
 if (is_post()) {

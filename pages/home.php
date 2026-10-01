@@ -110,9 +110,9 @@ $ctaBtn   = [
     'link'  => setting('cta_btn_link', '?page=kontak'),
 ];
 
-/* Helper placeholder gambar lokal */
+/* Helper placeholder gambar (mendukung Supabase Storage & local uploads) */
 $hasThumb = function (string $dir, ?string $file): bool {
-    return $file !== null && $file !== '' && is_file(UPLOADS_PATH . '/' . $dir . '/' . $file);
+    return upload_file_exists($dir, $file);
 };
 ?>
 <!-- ============ 2. HERO ============ -->
