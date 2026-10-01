@@ -67,9 +67,12 @@ function site_logo(): ?array
     return $cache;
 }
 
-/** URL file di folder uploads. */
+/** URL file di folder uploads. Jika Supabase Storage aktif, kembalikan URL Supabase. */
 function upload_url(string $path = ''): string
 {
+    if (USE_SUPABASE_STORAGE && $path !== '') {
+        return SUPABASE_URL . '/storage/v1/object/public/' . SUPABASE_BUCKET . '/' . ltrim($path, '/');
+    }
     return base_url('uploads/' . ltrim($path, '/'));
 }
 
@@ -396,14 +399,17 @@ function file_type_label(string $file): string
     return $ext !== '' ? $ext : 'FILE';
 }
 
-/** True jika file benar-benar ada di folder uploads. */
+/** True jika file ada. Jika Supabase Storage aktif, cukup cek filename tidak kosong (file di Supabase permanen). */
 function upload_file_exists(string $dir, ?string $file): bool
 {
-    return $file !== null
-        && $file !== ''
-        && strpos($file, '/') === false
-        && strpos($file, '\\') === false
-        && is_file(UPLOADS_PATH . '/' . $dir . '/' . $file);
+    if ($file === null || $file === '' || strpos($file, '/') !== false || strpos($file, '\\') !== false) {
+        return false;
+    }
+    if (USE_SUPABASE_STORAGE) {
+        // File di Supabase Storage tidak hilang — cukup pastikan nama file ada di DB
+        return true;
+    }
+    return is_file(UPLOADS_PATH . '/' . $dir . '/' . $file);
 }
 
 /* ------------------------------------------------------------

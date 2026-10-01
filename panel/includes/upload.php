@@ -48,6 +48,50 @@ function ensure_upload_dir(string $subdir): string
     return $dir;
 }
 
+/**
+ * Upload file lokal ke Supabase Storage via REST API.
+ * Dipanggil setelah GD memproses gambar dan menyimpannya sementara di /tmp.
+ * Return true jika berhasil atau jika Supabase Storage tidak dikonfigurasi.
+ */
+function supabase_storage_put(string $localPath, string $remotePath, string $mime): bool
+{
+    if (!USE_SUPABASE_STORAGE) {
+        return true; // Tidak perlu upload ke Supabase
+    }
+
+    $endpoint = SUPABASE_URL . '/storage/v1/object/' . SUPABASE_BUCKET . '/' . ltrim($remotePath, '/');
+    $data = @file_get_contents($localPath);
+    if ($data === false) {
+        return false;
+    }
+
+    $opts = [
+        'http' => [
+            'method'  => 'POST',
+            'header'  => implode("\r\n", [
+                'Authorization: Bearer ' . SUPABASE_KEY,
+                'Content-Type: ' . $mime,
+                'Content-Length: ' . strlen($data),
+                'x-upsert: true',
+            ]),
+            'content'        => $data,
+            'ignore_errors'  => true,
+            'timeout'        => 30,
+        ],
+    ];
+
+    $ctx    = stream_context_create($opts);
+    $result = @file_get_contents($endpoint, false, $ctx);
+    // Cek status HTTP dari response header
+    $status = 0;
+    if (!empty($http_response_header)) {
+        preg_match('/HTTP\/\S+\s+(\d+)/', $http_response_header[0], $m);
+        $status = (int) ($m[1] ?? 0);
+    }
+    return $status >= 200 && $status < 300;
+}
+
+
 /** Nama file acak aman + ekstensi aman (prefix opsional, karakter non-aman dibuang). */
 function safe_filename(string $ext, string $prefix = ''): string
 {
@@ -165,6 +209,7 @@ function process_image_upload(array $file, string $subdir, bool $withThumb = tru
     $name = safe_filename($info['ext']);
     $final = $im;
     $thumb = null;
+    $thumbName = null;
 
     try {
         if ($info['w'] > IMAGE_FULL_MAX_SIDE || $info['h'] > IMAGE_FULL_MAX_SIDE) {
@@ -172,10 +217,17 @@ function process_image_upload(array $file, string $subdir, bool $withThumb = tru
         }
         image_save($final, $dir . '/' . $name, $info['ext']);
 
+        // Upload gambar utama ke Supabase Storage
+        if (!supabase_storage_put($dir . '/' . $name, $subdir . '/' . $name, $info['mime'])) {
+            throw new UploadException('Gagal mengunggah gambar ke storage cloud.');
+        }
+
         if ($withThumb) {
             $thumbName = pathinfo($name, PATHINFO_FILENAME) . '-thumb.' . $info['ext'];
             $thumb = image_resize($im, IMAGE_THUMB_MAX_SIDE);
             image_save($thumb, $dir . '/' . $thumbName, $info['ext']);
+            // Upload thumbnail ke Supabase Storage
+            supabase_storage_put($dir . '/' . $thumbName, $subdir . '/' . $thumbName, $info['mime']);
         }
     } catch (Throwable $e) {
         @unlink($dir . '/' . ($name ?? ''));

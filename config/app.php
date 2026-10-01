@@ -34,6 +34,16 @@ if (getenv('VERCEL') || !@is_writable(BASE_PATH)) {
     define('UPLOADS_PATH', BASE_PATH . '/uploads');
 }
 
+// Supabase Storage — dipakai di Vercel agar file upload permanen (tidak hilang saat restart).
+// Set SUPABASE_URL dan SUPABASE_KEY di Vercel Project Settings → Environment Variables.
+// SUPABASE_URL  : https://[project-ref].supabase.co
+// SUPABASE_KEY  : service_role key (atau anon key jika bucket public)
+// SUPABASE_BUCKET: nama bucket (default: "uploads")
+define('SUPABASE_URL',    rtrim((string) getenv('SUPABASE_URL'), '/'));
+define('SUPABASE_KEY',    (string) getenv('SUPABASE_KEY'));
+define('SUPABASE_BUCKET', getenv('SUPABASE_BUCKET') ?: 'uploads');
+define('USE_SUPABASE_STORAGE', SUPABASE_URL !== '' && SUPABASE_KEY !== '');
+
 // Lokasi folder log
 define('LOGS_PATH', BASE_PATH . '/logs');
 
