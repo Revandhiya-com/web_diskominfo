@@ -7,7 +7,7 @@ require __DIR__ . '/includes/bootstrap.php';
 require __DIR__ . '/includes/layout.php';
 
 $albumId = (int) get_val('album');
-$album = q_one('SELECT id, title, slug, cover_image, created_by FROM albums WHERE id = ?', [$albumId]);
+$album = q_one('SELECT id, title, slug, cover_image FROM albums WHERE id = ?', [$albumId]);
 if (!$album) {
     flash_redirect('danger', 'Album tidak ditemukan.', 'panel/albums.php');
 }
