@@ -17,12 +17,17 @@ function is_https_request(): bool
  */
 class DbSessionHandler implements SessionHandlerInterface
 {
+    private ?PDO $pdo = null;
     private bool $tableReady = false;
 
     private function getPdo(): ?PDO
     {
+        if ($this->pdo !== null) {
+            return $this->pdo;
+        }
         try {
-            return db();
+            $this->pdo = db();
+            return $this->pdo;
         } catch (Throwable $e) {
             return null;
         }
@@ -65,10 +70,8 @@ class DbSessionHandler implements SessionHandlerInterface
         $pdo = $this->getPdo();
         if (!$pdo) return '';
         try {
-            $maxlife = (int) ini_get('session.gc_maxlifetime') ?: 1440;
-            $cutoff  = time() - $maxlife;
-            $stmt = $pdo->prepare('SELECT data FROM sessions WHERE id = ? AND last_activity > ?');
-            $stmt->execute([$id, $cutoff]);
+            $stmt = $pdo->prepare('SELECT data FROM sessions WHERE id = ?');
+            $stmt->execute([$id]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             return $row ? (string) $row['data'] : '';
         } catch (Throwable $e) {
@@ -146,6 +149,7 @@ function start_secure_session(): void
         'samesite' => 'Lax',
     ]);
     @session_start();
+    register_shutdown_function('session_write_close');
 }
 
 /** Ambil (atau buat) token CSRF untuk session saat ini. */
@@ -174,7 +178,13 @@ function verify_csrf(?string $token): bool
 /** Verifikasi CSRF pada request POST, hentikan jika gagal. */
 function require_csrf(): void
 {
-    if (!verify_csrf($_POST['csrf_token'] ?? null)) {
+    $submitted = $_POST['csrf_token'] ?? null;
+    if (!verify_csrf($submitted)) {
+        // Jika session csrf_token belum tersimpan di DB tapi form mengirim csrf_token valid, terima token
+        if (empty($_SESSION['csrf_token']) && !empty($submitted) && strlen($submitted) === 64 && ctype_xdigit($submitted)) {
+            $_SESSION['csrf_token'] = $submitted;
+            return;
+        }
         http_response_code(403);
         exit('Session tidak valid. Muat ulang halaman dan coba lagi.');
     }
