@@ -62,6 +62,7 @@ if (is_post()) {
             log_activity('update', 'album', $id, 'Perbarui album: ' . $title);
             flash_redirect($ok ? 'success' : 'danger', $ok ? 'Album berhasil diperbarui.' : 'Gagal menyimpan album.', 'panel/albums.php');
         } else {
+            $insertErrMsg = null;
             try {
                 $stmt = db()->prepare(
                     'INSERT INTO albums (title, slug, description, category_id, location, event_date, cover_image, status) VALUES (?,?,?,?,?,?,?,?) RETURNING id'
@@ -72,11 +73,17 @@ if (is_post()) {
                 $ok = $newId > 0;
             } catch (Throwable $insertErr) {
                 log_error('Insert album failed', $insertErr);
+                $insertErrMsg = $insertErr->getMessage();
                 $ok = false;
                 $newId = 0;
             }
-            log_activity('create', 'album', $newId, 'Buat album: ' . $title);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Album berhasil dibuat.' : 'Gagal menyimpan album.', $ok ? 'panel/photos.php?album=' . $newId : 'panel/albums.php');
+            if ($ok) {
+                log_activity('create', 'album', $newId, 'Buat album: ' . $title);
+                flash_redirect('success', 'Album berhasil dibuat.', 'panel/photos.php?album=' . $newId);
+            } else {
+                // Tampilkan error DB langsung di halaman agar mudah di-debug
+                $errors[] = 'Gagal menyimpan album ke database.' . ($insertErrMsg ? ' Detail: ' . $insertErrMsg : '');
+            }
         }
     }
 }
