@@ -35,6 +35,19 @@ class UploadException extends RuntimeException
 {
 }
 
+/** Dipanggil untuk memastikan folder upload subdirectory siap ditulis. Fallback ke sys_get_temp_dir() jika read-only (misal Vercel). */
+function ensure_upload_dir(string $subdir): string
+{
+    $dir = UPLOADS_PATH . '/' . $subdir;
+    if (!is_dir($dir) && !@mkdir($dir, 0777, true)) {
+        $dir = sys_get_temp_dir() . '/uploads/' . $subdir;
+        if (!is_dir($dir) && !@mkdir($dir, 0777, true)) {
+            throw new UploadException('Folder upload tidak dapat dibuat. Periksa izin folder.');
+        }
+    }
+    return $dir;
+}
+
 /** Nama file acak aman + ekstensi aman (prefix opsional, karakter non-aman dibuang). */
 function safe_filename(string $ext, string $prefix = ''): string
 {
@@ -137,15 +150,11 @@ function image_resize($im, int $maxSide)
 /**
  * Proses upload gambar: validasi → resize → thumbnail → simpan.
  * Return: ['image' => namaFile, 'thumb' => namaThumb|null] untuk disimpan di DB.
- * Semua file ditulis ke uploads/{subdir}/ (flat, tanpa subfolder user).
  */
 function process_image_upload(array $file, string $subdir, bool $withThumb = true): array
 {
     $info = validate_image($file);
-    $dir = UPLOADS_PATH . '/' . $subdir;
-    if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
-        throw new UploadException('Folder upload tidak dapat dibuat.');
-    }
+    $dir = ensure_upload_dir($subdir);
 
     $source = $file['tmp_name'];
     $im = image_open($source, $info['ext']);
@@ -183,16 +192,12 @@ function process_image_upload(array $file, string $subdir, bool $withThumb = tru
 
 /**
  * Proses upload file VIDEO modul Video: validasi whitelist MIME → simpan apa adanya
- * di uploads/videos/ dengan nama unik berprefix tanggal (video_YYYYMMDD_xxx.mp4).
- * Return: ['name' => namaFile, 'mime' => mimeType, 'size' => ukuranByte].
+ * di uploads/videos/.
  */
 function process_video_upload(array $file): array
 {
     $mime = validate_upload($file, VIDEO_MIME_EXT, UPLOAD_VIDEO_MAX_SIZE);
-    $dir = UPLOADS_PATH . '/videos';
-    if (!is_dir($dir) && !mkdir($dir, 0755, true) && !is_dir($dir)) {
-        throw new UploadException('Media tidak dapat disimpan. Periksa konfigurasi folder upload.');
-    }
+    $dir = ensure_upload_dir('videos');
     $name = safe_filename(VIDEO_MIME_EXT[$mime], 'video_' . date('Ymd'));
     if (!move_uploaded_file($file['tmp_name'], $dir . '/' . $name)) {
         throw new UploadException('Video gagal diunggah. Silakan coba lagi.');
@@ -202,9 +207,6 @@ function process_video_upload(array $file): array
 
 /**
  * Proses upload media (gambar ATAU video) untuk galeri album.
- * Gambar: validasi → resize → thumbnail (process_image_upload).
- * Video:  validasi MIME whitelist → simpan apa adanya (tanpa resize).
- * Return: ['image' => namaFile, 'thumb' => namaThumb|null, 'type' => 'image'|'video']
  */
 function process_media_upload(array $file, string $subdir, bool $withThumb = true): array
 {
@@ -213,10 +215,7 @@ function process_media_upload(array $file, string $subdir, bool $withThumb = tru
         $mime = strtolower((string) ($finfo->file($file['tmp_name']) ?: ''));
         if (isset(VIDEO_MIME_EXT[$mime])) {
             validate_upload($file, VIDEO_MIME_EXT, UPLOAD_VIDEO_MAX_SIZE);
-            $dir = UPLOADS_PATH . '/' . $subdir;
-            if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
-                throw new UploadException('Folder upload tidak dapat dibuat.');
-            }
+            $dir = ensure_upload_dir($subdir);
             $name = safe_filename(VIDEO_MIME_EXT[$mime]);
             if (!move_uploaded_file($file['tmp_name'], $dir . '/' . $name)) {
                 throw new UploadException('Gagal menyimpan file video di server.');
@@ -236,14 +235,20 @@ function delete_uploaded(string $subdir, ?string $file): void
     if (!$file || $file === '' || strpos($file, '/') !== false || strpos($file, '\\') !== false) {
         return;
     }
-    $path = UPLOADS_PATH . '/' . $subdir . '/' . $file;
-    if (is_file($path)) {
-        @unlink($path);
+    $paths = [
+        UPLOADS_PATH . '/' . $subdir . '/' . $file,
+        sys_get_temp_dir() . '/uploads/' . $subdir . '/' . $file,
+    ];
+    foreach ($paths as $path) {
+        if (is_file($path)) {
+            @unlink($path);
+        }
     }
     $thumb = pathinfo($file, PATHINFO_FILENAME) . '-thumb.' . pathinfo($file, PATHINFO_EXTENSION);
-    $thumbPath = UPLOADS_PATH . '/' . $subdir . '/' . $thumb;
-    if (is_file($thumbPath)) {
-        @unlink($thumbPath);
+    foreach ([UPLOADS_PATH . '/' . $subdir . '/' . $thumb, sys_get_temp_dir() . '/uploads/' . $subdir . '/' . $thumb] as $thumbPath) {
+        if (is_file($thumbPath)) {
+            @unlink($thumbPath);
+        }
     }
 }
 
@@ -261,10 +266,7 @@ function process_document_upload(array $file, string $subdir): array
         'application/octet-stream' => 'zip',
     ];
     $mime = validate_upload($file, $allowed, 10 * 1024 * 1024);
-    $dir = UPLOADS_PATH . '/' . $subdir;
-    if (!is_dir($dir) && !mkdir($dir, 0755, true)) {
-        throw new UploadException('Folder upload tidak dapat dibuat.');
-    }
+    $dir = ensure_upload_dir($subdir);
     $name = safe_filename($allowed[$mime]);
     if (!move_uploaded_file($file['tmp_name'], $dir . '/' . $name)) {
         throw new UploadException('Gagal menyimpan file di server.');
