@@ -53,42 +53,100 @@ function ensure_upload_dir(string $subdir): string
  * Dipanggil setelah GD memproses gambar dan menyimpannya sementara di /tmp.
  * Return true jika berhasil atau jika Supabase Storage tidak dikonfigurasi.
  */
+/**
+ * Upload file lokal ke Supabase Storage via REST API.
+ * Dipanggil setelah GD memproses gambar dan menyimpannya sementara di /tmp.
+ */
 function supabase_storage_put(string $localPath, string $remotePath, string $mime): bool
 {
     if (!USE_SUPABASE_STORAGE) {
-        return true; // Tidak perlu upload ke Supabase
+        return true; // Tidak perlu upload ke Supabase jika env var belum diset
     }
 
     $endpoint = SUPABASE_URL . '/storage/v1/object/' . SUPABASE_BUCKET . '/' . ltrim($remotePath, '/');
     $data = @file_get_contents($localPath);
     if ($data === false) {
-        return false;
+        throw new UploadException('Gagal membaca file lokal untuk upload cloud.');
     }
 
-    $opts = [
-        'http' => [
-            'method'  => 'POST',
-            'header'  => implode("\r\n", [
-                'Authorization: Bearer ' . SUPABASE_KEY,
-                'Content-Type: ' . $mime,
-                'Content-Length: ' . strlen($data),
-                'x-upsert: true',
-            ]),
-            'content'        => $data,
-            'ignore_errors'  => true,
-            'timeout'        => 30,
-        ],
+    $headers = [
+        'apikey: ' . SUPABASE_KEY,
+        'Authorization: Bearer ' . SUPABASE_KEY,
+        'Content-Type: ' . $mime,
+        'Content-Length: ' . strlen($data),
+        'x-upsert: true',
     ];
 
-    $ctx    = stream_context_create($opts);
-    $result = @file_get_contents($endpoint, false, $ctx);
-    // Cek status HTTP dari response header
     $status = 0;
-    if (!empty($http_response_header)) {
-        preg_match('/HTTP\/\S+\s+(\d+)/', $http_response_header[0], $m);
-        $status = (int) ($m[1] ?? 0);
+    $response = '';
+
+    if (function_exists('curl_init')) {
+        $ch = curl_init($endpoint);
+        curl_setopt_array($ch, [
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => $data,
+            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_TIMEOUT => 30,
+            CURLOPT_SSL_VERIFYPEER => false,
+        ]);
+        $response = curl_exec($ch);
+        $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlErr = curl_error($ch);
+        curl_close($ch);
+        if ($response === false && $status === 0) {
+            throw new UploadException('Koneksi ke Supabase Storage gagal: ' . ($curlErr ?: 'network error'));
+        }
+    } else {
+        $opts = [
+            'http' => [
+                'method'        => 'POST',
+                'header'        => implode("\r\n", $headers),
+                'content'       => $data,
+                'ignore_errors' => true,
+                'timeout'       => 30,
+            ],
+        ];
+        $ctx = stream_context_create($opts);
+        $response = @file_get_contents($endpoint, false, $ctx);
+        if (!empty($http_response_header)) {
+            preg_match('/HTTP\/\S+\s+(\d+)/', $http_response_header[0], $m);
+            $status = (int) ($m[1] ?? 0);
+        }
     }
-    return $status >= 200 && $status < 300;
+
+    if ($status < 200 || $status >= 300) {
+        $detail = '';
+        if ($response !== false && $response !== '') {
+            $json = @json_decode($response, true);
+            if (isset($json['message'])) {
+                $detail = $json['message'];
+            } elseif (isset($json['error'])) {
+                $detail = is_string($json['error']) ? $json['error'] : json_encode($json['error']);
+            } elseif (isset($json['statusCode'])) {
+                $detail = ($json['error'] ?? '') . ': ' . ($json['message'] ?? '');
+            } else {
+                $detail = substr(trim(strip_tags($response)), 0, 150);
+            }
+        }
+
+        $msg = 'Supabase Storage error (HTTP ' . $status . ')';
+        if ($detail !== '') {
+            $msg .= ': ' . $detail;
+        }
+
+        if ($status === 404) {
+            $msg .= ' — Pastikan bucket "' . SUPABASE_BUCKET . '" sudah dibuat di Supabase Storage!';
+        } elseif ($status === 401) {
+            $msg .= ' — Pastikan SUPABASE_KEY (anon key / service_role key) di Environment Variables Vercel valid!';
+        } elseif ($status === 403) {
+            $msg .= ' — Periksa RLS policy bucket Supabase atau pastikan Bucket bersifat Public!';
+        }
+
+        throw new UploadException($msg);
+    }
+
+    return true;
 }
 
 
@@ -218,9 +276,7 @@ function process_image_upload(array $file, string $subdir, bool $withThumb = tru
         image_save($final, $dir . '/' . $name, $info['ext']);
 
         // Upload gambar utama ke Supabase Storage
-        if (!supabase_storage_put($dir . '/' . $name, $subdir . '/' . $name, $info['mime'])) {
-            throw new UploadException('Gagal mengunggah gambar ke storage cloud.');
-        }
+        supabase_storage_put($dir . '/' . $name, $subdir . '/' . $name, $info['mime']);
 
         if ($withThumb) {
             $thumbName = pathinfo($name, PATHINFO_FILENAME) . '-thumb.' . $info['ext'];
@@ -229,6 +285,10 @@ function process_image_upload(array $file, string $subdir, bool $withThumb = tru
             // Upload thumbnail ke Supabase Storage
             supabase_storage_put($dir . '/' . $thumbName, $subdir . '/' . $thumbName, $info['mime']);
         }
+    } catch (UploadException $e) {
+        @unlink($dir . '/' . ($name ?? ''));
+        @unlink($dir . '/' . ($thumbName ?? ''));
+        throw $e;
     } catch (Throwable $e) {
         @unlink($dir . '/' . ($name ?? ''));
         @unlink($dir . '/' . ($thumbName ?? ''));
