@@ -38,7 +38,12 @@ if ($page === '') {
     $page = DEFAULT_PAGE;
 }
 
-$pageFile = BASE_PATH . '/pages/' . $page . '.php';
+"$pageFile = BASE_PATH . '/pages/' . $page . '.php';
+
+if ($page === 'setup' && is_file($pageFile)) {
+    require $pageFile;
+    exit;
+}
 $cmsPage = null;
 if (!is_file($pageFile)) {
     $row = q_one('SELECT slug, title, content, source_url FROM pages WHERE slug = ? AND status = \'published\'', [$page]);

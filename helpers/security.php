@@ -15,16 +15,27 @@ function is_https_request(): bool
  * Session handler berbasis database — kompatibel MySQL & PostgreSQL.
  * Diperlukan di Vercel serverless karena filesystem /tmp tidak persisten antar invokasi.
  */
-class DbSessionHandler implements SessionHandlerInterface
+"class DbSessionHandler implements SessionHandlerInterface
 {
     private bool $tableReady = false;
+
+    private function getPdo(): ?PDO
+    {
+        try {
+            return db();
+        } catch (Throwable $e) {
+            return null;
+        }
+    }
 
     public function open(string $savePath, string $sessionName): bool
     {
         if ($this->tableReady) return true;
+        $pdo = $this->getPdo();
+        if (!$pdo) return true;
         try {
             if (defined('DB_DRIVER') && DB_DRIVER === 'pgsql') {
-                db()->exec(
+                $pdo->exec(
                     "CREATE TABLE IF NOT EXISTS sessions (
                         id VARCHAR(128) PRIMARY KEY,
                         data TEXT NOT NULL DEFAULT '',
@@ -32,7 +43,7 @@ class DbSessionHandler implements SessionHandlerInterface
                     )"
                 );
             } else {
-                db()->exec(
+                $pdo->exec(
                     "CREATE TABLE IF NOT EXISTS sessions (
                         id VARCHAR(128) PRIMARY KEY,
                         data TEXT NOT NULL DEFAULT '',
@@ -51,13 +62,14 @@ class DbSessionHandler implements SessionHandlerInterface
 
     public function read(string $id): string|false
     {
+        $pdo = $this->getPdo();
+        if (!$pdo) return '';
         try {
             $maxlife = (int) ini_get('session.gc_maxlifetime') ?: 1440;
             $cutoff  = time() - $maxlife;
-            $row = q_one(
-                'SELECT data FROM sessions WHERE id = ? AND last_activity > ?',
-                [$id, $cutoff]
-            );
+            $stmt = $pdo->prepare('SELECT data FROM sessions WHERE id = ? AND last_activity > ?');
+            $stmt->execute([$id, $cutoff]);
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
             return $row ? (string) $row['data'] : '';
         } catch (Throwable $e) {
             return '';
@@ -66,21 +78,22 @@ class DbSessionHandler implements SessionHandlerInterface
 
     public function write(string $id, string $data): bool
     {
+        $pdo = $this->getPdo();
+        if (!$pdo) return false;
         try {
             $now = time();
             if (defined('DB_DRIVER') && DB_DRIVER === 'pgsql') {
-                q_exec(
+                $stmt = $pdo->prepare(
                     'INSERT INTO sessions (id, data, last_activity) VALUES (?, ?, ?)
-                     ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, last_activity = EXCLUDED.last_activity',
-                    [$id, $data, $now]
+                     ON CONFLICT (id) DO UPDATE SET data = EXCLUDED.data, last_activity = EXCLUDED.last_activity'
                 );
             } else {
-                q_exec(
+                $stmt = $pdo->prepare(
                     'INSERT INTO sessions (id, data, last_activity) VALUES (?, ?, ?)
-                     ON DUPLICATE KEY UPDATE data = VALUES(data), last_activity = VALUES(last_activity)',
-                    [$id, $data, $now]
+                     ON DUPLICATE KEY UPDATE data = VALUES(data), last_activity = VALUES(last_activity)'
                 );
             }
+            $stmt->execute([$id, $data, $now]);
             return true;
         } catch (Throwable $e) {
             return false;
@@ -89,14 +102,24 @@ class DbSessionHandler implements SessionHandlerInterface
 
     public function destroy(string $id): bool
     {
-        q_exec('DELETE FROM sessions WHERE id = ?', [$id]);
+        $pdo = $this->getPdo();
+        if (!$pdo) return true;
+        try {
+            $stmt = $pdo->prepare('DELETE FROM sessions WHERE id = ?');
+            $stmt->execute([$id]);
+        } catch (Throwable $e) {}
         return true;
     }
 
     public function gc(int $maxlifetime): int|false
     {
-        $cutoff = time() - $maxlifetime;
-        q_exec('DELETE FROM sessions WHERE last_activity < ?', [$cutoff]);
+        $pdo = $this->getPdo();
+        if (!$pdo) return 0;
+        try {
+            $cutoff = time() - $maxlifetime;
+            $stmt = $pdo->prepare('DELETE FROM sessions WHERE last_activity < ?');
+            $stmt->execute([$cutoff]);
+        } catch (Throwable $e) {}
         return 1;
     }
 }
@@ -122,7 +145,7 @@ function start_secure_session(): void
         'httponly' => true,
         'samesite' => 'Lax',
     ]);
-    session_start();
+    @session_start();
 }
 
 /** Ambil (atau buat) token CSRF untuk session saat ini. */
