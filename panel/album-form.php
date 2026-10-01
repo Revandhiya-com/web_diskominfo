@@ -62,15 +62,21 @@ if (is_post()) {
             log_activity('update', 'album', $id, 'Perbarui album: ' . $title);
             flash_redirect($ok ? 'success' : 'danger', $ok ? 'Album berhasil diperbarui.' : 'Gagal menyimpan album.', 'panel/albums.php');
         } else {
-            $ok = q_exec(
-                'INSERT INTO albums (title, slug, description, category_id, location, event_date, cover_image, status, created_by) VALUES (?,?,?,?,?,?,?,?,?)',
-                [$title, $slug, $description ?: null, $categoryId ?: null, $location ?: null, $eventDate ?: null, $cover['image'] ?? null, $status, current_user()['id']]
-            );
-            if ($ok) {
-                $newId = (int) db()->lastInsertId();
+            try {
+                $stmt = db()->prepare(
+                    'INSERT INTO albums (title, slug, description, category_id, location, event_date, cover_image, status) VALUES (?,?,?,?,?,?,?,?) RETURNING id'
+                );
+                $stmt->execute([$title, $slug, $description ?: null, $categoryId ?: null, $location ?: null, $eventDate ?: null, $cover['image'] ?? null, $status]);
+                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                $newId = (int) ($row['id'] ?? 0);
+                $ok = $newId > 0;
+            } catch (Throwable $insertErr) {
+                log_error('Insert album failed', $insertErr);
+                $ok = false;
+                $newId = 0;
             }
-            log_activity('create', 'album', $newId ?? 0, 'Buat album: ' . $title);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Album berhasil dibuat.' : 'Gagal menyimpan album.', $ok ? 'panel/photos.php?album=' . ($newId ?? 0) : 'panel/albums.php');
+            log_activity('create', 'album', $newId, 'Buat album: ' . $title);
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Album berhasil dibuat.' : 'Gagal menyimpan album.', $ok ? 'panel/photos.php?album=' . $newId : 'panel/albums.php');
         }
     }
 }
