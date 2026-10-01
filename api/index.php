@@ -128,7 +128,7 @@ if ($page === '') {
     $page = DEFAULT_PAGE;
 }
 
-"$pageFile = BASE_PATH . '/pages/' . $page . '.php';
+$pageFile = BASE_PATH . '/pages/' . $page . '.php';
 
 if ($page === 'setup' && is_file($pageFile)) {
     require $pageFile;

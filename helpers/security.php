@@ -15,7 +15,7 @@ function is_https_request(): bool
  * Session handler berbasis database — kompatibel MySQL & PostgreSQL.
  * Diperlukan di Vercel serverless karena filesystem /tmp tidak persisten antar invokasi.
  */
-"class DbSessionHandler implements SessionHandlerInterface
+class DbSessionHandler implements SessionHandlerInterface
 {
     private bool $tableReady = false;
 
