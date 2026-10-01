@@ -62,9 +62,8 @@ if (preg_match('/\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|pdf|txt|x
 // 2. Panel routing — semua request yang diawali /panel/ dilayani dari folder panel/
 if (strpos($uri, '/panel') === 0) {
     $sub = substr($uri, 6); // strip '/panel'
-    if ($sub === '' || $sub === '/' || $sub === '/index.php') {
-        // Root /panel/ selalu ke halaman login (menangani GET form & POST submit)
-        $panelFile = resolve_app_file('/panel/login.php');
+    if ($sub === '' || $sub === '/') {
+        $panelFile = resolve_app_file('/panel/index.php') ?: resolve_app_file('/panel/login.php');
     } else {
         $candidates = [
             '/panel' . $sub,
