@@ -92,7 +92,7 @@ function toggle_status(string $table, string $titleCol, string $label): void
     if (!array_key_exists($table, $hasPub)) {
         $hasPub[$table] = (bool) q_one(
             "SELECT COUNT(*) n FROM information_schema.columns
-             WHERE table_schema = current_database() AND table_name = ? AND column_name = 'published_at'",
+             WHERE table_schema = 'public' AND table_name = ? AND column_name = 'published_at'",
             [$table]
         )['n'];
     }
