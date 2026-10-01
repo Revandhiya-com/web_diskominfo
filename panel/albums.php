@@ -23,9 +23,9 @@ if (is_post()) {
             q_exec('DELETE FROM albums WHERE id = ?', [$id]);
             delete_uploaded('albums', $album['cover_image']);
             log_activity('delete', 'album', $id, 'Hapus album: ' . $album['title']);
-            flash_redirect('success', 'Album beserta seluruh fotonya telah dihapus.', 'admin/albums.php');
+            flash_redirect('success', 'Album beserta seluruh fotonya telah dihapus.', 'panel/albums.php');
         }
-        flash_redirect('danger', 'Album tidak ditemukan.', 'admin/albums.php');
+        flash_redirect('danger', 'Album tidak ditemukan.', 'panel/albums.php');
     }
 }
 
@@ -70,7 +70,7 @@ admin_layout_start('Dokumentasi', 'albums');
 <div class="admin-card mb-3">
     <div class="admin-card-head">
         <h2>Album Dokumentasi</h2>
-        <a class="btn btn-sm btn-primary" href="<?= e(base_url('admin/album-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Album</a>
+        <a class="btn btn-sm btn-primary" href="<?= e(base_url('panel/album-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Album</a>
     </div>
     <div class="admin-card-body">
         <form method="get" class="row g-2 align-items-end">
@@ -97,7 +97,7 @@ admin_layout_start('Dokumentasi', 'albums');
             </div>
             <div class="col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-primary flex-fill" type="submit"><i class="bi bi-search"></i></button>
-                <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/albums.php')) ?>"><i class="bi bi-x-lg"></i></a>
+                <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/albums.php')) ?>"><i class="bi bi-x-lg"></i></a>
             </div>
         </form>
     </div>
@@ -121,7 +121,7 @@ admin_layout_start('Dokumentasi', 'albums');
                 <?php if (!$albums): ?>
                     <tr><td colspan="7" class="empty-muted">
                         <p class="mb-1"><i class="bi bi-images fs-4 d-block mb-2"></i>Belum ada album dokumentasi.</p>
-                        <a class="btn-admin-sm" href="<?= e(base_url('admin/album-form.php')) ?>">Tambah album pertama</a>
+                        <a class="btn-admin-sm" href="<?= e(base_url('panel/album-form.php')) ?>">Tambah album pertama</a>
                     </td></tr>
                 <?php else: foreach ($albums as $a): ?>
                     <tr>
@@ -152,8 +152,8 @@ admin_layout_start('Dokumentasi', 'albums');
                         </td>
                         <td class="text-end">
                             <div class="admin-actions justify-content-end">
-                                <a class="btn-admin-sm" href="<?= e(base_url('admin/photos.php?album=' . (int) $a['id'])) ?>"><i class="bi bi-camera"></i>Foto</a>
-                                <a class="btn-admin-sm" href="<?= e(base_url('admin/album-form.php?id=' . (int) $a['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
+                                <a class="btn-admin-sm" href="<?= e(base_url('panel/photos.php?album=' . (int) $a['id'])) ?>"><i class="bi bi-camera"></i>Foto</a>
+                                <a class="btn-admin-sm" href="<?= e(base_url('panel/album-form.php?id=' . (int) $a['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
                                 <form method="post" class="d-inline" onsubmit="return confirm('Hapus album ini beserta seluruh fotonya?')">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="delete">

@@ -17,9 +17,9 @@ if (is_post()) {
             delete_uploaded('news', $news['thumbnail']);
             q_exec('DELETE FROM news WHERE id = ?', [$id]);
             log_activity('delete', 'news', $id, 'Hapus berita: ' . $news['title']);
-            flash_redirect('success', 'Berita dihapus.', 'admin/news.php');
+            flash_redirect('success', 'Berita dihapus.', 'panel/news.php');
         }
-        flash_redirect('danger', 'Berita tidak ditemukan.', 'admin/news.php');
+        flash_redirect('danger', 'Berita tidak ditemukan.', 'panel/news.php');
     }
 }
 
@@ -61,7 +61,7 @@ admin_layout_start('Berita', 'news');
 <div class="admin-card mb-3">
     <div class="admin-card-head">
         <h2>Berita</h2>
-        <a class="btn btn-sm btn-primary" href="<?= e(base_url('admin/news-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Berita</a>
+        <a class="btn btn-sm btn-primary" href="<?= e(base_url('panel/news-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Berita</a>
     </div>
     <div class="admin-card-body">
         <form method="get" class="row g-2 align-items-end">
@@ -82,7 +82,7 @@ admin_layout_start('Berita', 'news');
                 </select></div>
             <div class="col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-primary flex-fill" type="submit"><i class="bi bi-search"></i></button>
-                <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/news.php')) ?>"><i class="bi bi-x-lg"></i></a>
+                <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/news.php')) ?>"><i class="bi bi-x-lg"></i></a>
             </div>
         </form>
     </div>
@@ -115,7 +115,7 @@ admin_layout_start('Berita', 'news');
                         <td class="text-end">
                             <div class="admin-actions justify-content-end">
                                 <a class="btn-admin-sm" href="<?= e(base_url('?page=detail-berita&slug=' . urlencode($n['slug']))) ?>" target="_blank" rel="noopener"><i class="bi bi-eye"></i>Lihat</a>
-                                <a class="btn-admin-sm" href="<?= e(base_url('admin/news-form.php?id=' . (int) $n['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
+                                <a class="btn-admin-sm" href="<?= e(base_url('panel/news-form.php?id=' . (int) $n['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
                                 <form method="post" class="d-inline" data-confirm="Hapus berita ini?">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="delete">

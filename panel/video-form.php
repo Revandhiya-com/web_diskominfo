@@ -9,7 +9,7 @@ require __DIR__ . '/includes/layout.php';
 $id = (int) get_val('id');
 $item = $id > 0 ? q_one('SELECT * FROM videos WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$item) {
-    flash_redirect('danger', 'Media tidak ditemukan.', 'admin/videos.php');
+    flash_redirect('danger', 'Media tidak ditemukan.', 'panel/videos.php');
 }
 
 $errors = [];
@@ -101,9 +101,9 @@ if (is_post()) {
                     delete_uploaded('videos', $item['thumbnail']);
                 }
                 log_activity('update', 'video', $id, 'Perbarui media: ' . $title);
-                flash_redirect('success', 'Media disimpan.', 'admin/videos.php');
+                flash_redirect('success', 'Media disimpan.', 'panel/videos.php');
             }
-            flash_redirect('danger', 'Gagal menyimpan media.', 'admin/videos.php');
+            flash_redirect('danger', 'Gagal menyimpan media.', 'panel/videos.php');
         } else {
             $ok = q_exec(
                 'INSERT INTO videos (title, description, media_type, file_path, mime_type, file_size, thumbnail, status, created_by) VALUES (?,?,?,?,?,?,?,?,?)',
@@ -111,7 +111,7 @@ if (is_post()) {
             );
             $newId = $ok ? (int) db()->lastInsertId() : 0;
             log_activity('create', 'video', $newId, 'Tambah media: ' . $title);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Media ditambahkan.' : 'Gagal menyimpan media.', 'admin/videos.php');
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Media ditambahkan.' : 'Gagal menyimpan media.', 'panel/videos.php');
         }
     }
 
@@ -131,7 +131,7 @@ admin_layout_start($item ? 'Edit Media' : 'Tambah Video/Media', 'videos');
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0"><?= $item ? 'Edit Media' : 'Tambah Video/Media' ?></h1>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/videos.php')) ?>">&larr; Kembali</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/videos.php')) ?>">&larr; Kembali</a>
 </div>
 
 <?php if ($errors): ?>
@@ -203,7 +203,7 @@ admin_layout_start($item ? 'Edit Media' : 'Tambah Video/Media', 'videos');
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan Media</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/videos.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/videos.php')) ?>">Batal</a>
     </div>
 </form>
 

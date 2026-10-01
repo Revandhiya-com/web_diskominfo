@@ -62,7 +62,7 @@ if (is_post()) {
         }
     }
     log_activity('update', 'settings', null, 'Perbarui pengaturan situs (' . $updates . ' kolom)');
-    flash_redirect('success', 'Pengaturan berhasil disimpan.', 'admin/settings.php');
+    flash_redirect('success', 'Pengaturan berhasil disimpan.', 'panel/settings.php');
 }
 
 $current = [];

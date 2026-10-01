@@ -16,9 +16,9 @@ if (is_post()) {
         if ($p) {
             q_exec('DELETE FROM pages WHERE id = ?', [$id]);
             log_activity('delete', 'page', $id, 'Hapus halaman: ' . $p['title']);
-            flash_redirect('success', 'Halaman dihapus.', 'admin/pages.php');
+            flash_redirect('success', 'Halaman dihapus.', 'panel/pages.php');
         }
-        flash_redirect('danger', 'Halaman tidak ditemukan.', 'admin/pages.php');
+        flash_redirect('danger', 'Halaman tidak ditemukan.', 'panel/pages.php');
     }
 }
 
@@ -45,7 +45,7 @@ admin_layout_start('Halaman Statis', 'pages');
 <div class="alert alert-info small py-2"><i class="bi bi-info-circle me-1"></i>Halaman ini dipakai publik, contoh: <code>?page=profil</code>, <code>?page=layanan</code>. Slug menentukan URL-nya.</div>
 <div class="admin-card mb-3">
     <div class="admin-card-head"><h2>Halaman Statis</h2>
-        <a class="btn btn-sm btn-primary" href="<?= e(base_url('admin/page-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Halaman</a></div>
+        <a class="btn btn-sm btn-primary" href="<?= e(base_url('panel/page-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Halaman</a></div>
     <div class="admin-card-body">
         <form method="get" class="row g-2 align-items-end">
             <div class="col-md-4"><label class="form-label-admin">Cari</label>
@@ -58,7 +58,7 @@ admin_layout_start('Halaman Statis', 'pages');
                 </select></div>
             <div class="col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-primary flex-fill" type="submit"><i class="bi bi-search"></i></button>
-                <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/pages.php')) ?>"><i class="bi bi-x-lg"></i></a>
+                <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/pages.php')) ?>"><i class="bi bi-x-lg"></i></a>
             </div>
         </form>
     </div>
@@ -87,7 +87,7 @@ admin_layout_start('Halaman Statis', 'pages');
                         </td>
                         <td class="text-end"><div class="admin-actions justify-content-end">
                             <a class="btn-admin-sm" href="<?= e(base_url('?page=' . urlencode($p['slug']))) ?>" target="_blank" rel="noopener"><i class="bi bi-eye"></i>Lihat</a>
-                            <a class="btn-admin-sm" href="<?= e(base_url('admin/page-form.php?id=' . (int) $p['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
+                            <a class="btn-admin-sm" href="<?= e(base_url('panel/page-form.php?id=' . (int) $p['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
                             <form method="post" class="d-inline" data-confirm="Hapus halaman ini?">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="delete">

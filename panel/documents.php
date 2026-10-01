@@ -14,9 +14,9 @@ if (is_post()) {
             delete_uploaded('documents', $d['file']);
             q_exec('DELETE FROM documents WHERE id = ?', [$id]);
             log_activity('delete', 'document', $id, 'Hapus dokumen: ' . $d['name']);
-            flash_redirect('success', 'Dokumen dihapus.', 'admin/documents.php');
+            flash_redirect('success', 'Dokumen dihapus.', 'panel/documents.php');
         }
-        flash_redirect('danger', 'Dokumen tidak ditemukan.', 'admin/documents.php');
+        flash_redirect('danger', 'Dokumen tidak ditemukan.', 'panel/documents.php');
     }
 }
 
@@ -50,7 +50,7 @@ admin_layout_start('Dokumen', 'documents');
 ?>
 <div class="admin-card mb-3">
     <div class="admin-card-head"><h2>Dokumen Unduhan</h2>
-        <a class="btn btn-sm btn-primary" href="<?= e(base_url('admin/document-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Dokumen</a></div>
+        <a class="btn btn-sm btn-primary" href="<?= e(base_url('panel/document-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Dokumen</a></div>
     <div class="admin-card-body">
         <form method="get" class="row g-2 align-items-end">
             <div class="col-md-4"><label class="form-label-admin">Cari</label>
@@ -64,7 +64,7 @@ admin_layout_start('Dokumen', 'documents');
                 </select></div>
             <div class="col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-primary flex-fill" type="submit"><i class="bi bi-search"></i></button>
-                <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/documents.php')) ?>"><i class="bi bi-x-lg"></i></a>
+                <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/documents.php')) ?>"><i class="bi bi-x-lg"></i></a>
             </div>
         </form>
     </div>
@@ -84,7 +84,7 @@ admin_layout_start('Dokumen', 'documents');
                         <td><?= e(format_date_id($d['uploaded_at'])) ?></td>
                         <td class="text-end"><div class="admin-actions justify-content-end">
                             <a class="btn-admin-sm" href="<?= e(base_url('?page=dokumen&download=' . (int) $d['id'])) ?>" target="_blank" rel="noopener"><i class="bi bi-download"></i>Unduh</a>
-                            <a class="btn-admin-sm" href="<?= e(base_url('admin/document-form.php?id=' . (int) $d['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
+                            <a class="btn-admin-sm" href="<?= e(base_url('panel/document-form.php?id=' . (int) $d['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
                             <form method="post" class="d-inline" data-confirm="Hapus dokumen ini beserta filenya?">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="delete">

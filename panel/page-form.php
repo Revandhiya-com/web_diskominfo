@@ -8,7 +8,7 @@ require __DIR__ . '/includes/layout.php';
 $id = (int) get_val('id');
 $item = $id > 0 ? q_one('SELECT * FROM pages WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$item) {
-    flash_redirect('danger', 'Halaman tidak ditemukan.', 'admin/pages.php');
+    flash_redirect('danger', 'Halaman tidak ditemukan.', 'panel/pages.php');
 }
 
 $errors = [];
@@ -36,12 +36,12 @@ if (is_post()) {
         if ($id > 0) {
             $ok = q_exec('UPDATE pages SET title=?, slug=?, content=?, source_url=?, status=? WHERE id=?', [$title, $slug, $content, $sourceUrl ?: null, $status, $id]);
             log_activity('update', 'page', $id, 'Perbarui halaman: ' . $title);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Halaman disimpan.' : 'Gagal menyimpan.', 'admin/pages.php');
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Halaman disimpan.' : 'Gagal menyimpan.', 'panel/pages.php');
         }
         $ok = q_exec('INSERT INTO pages (title, slug, content, source_url, status) VALUES (?,?,?,?,?)', [$title, $slug, $content, $sourceUrl ?: null, $status]);
         $newId = $ok ? (int) db()->lastInsertId() : 0;
         log_activity('create', 'page', $newId, 'Buat halaman: ' . $title);
-        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Halaman dibuat.' : 'Gagal menyimpan.', 'admin/pages.php');
+        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Halaman dibuat.' : 'Gagal menyimpan.', 'panel/pages.php');
     }
 }
 
@@ -49,7 +49,7 @@ admin_layout_start($item ? 'Edit Halaman' : 'Tambah Halaman', 'pages');
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0"><?= $item ? 'Edit Halaman' : 'Tambah Halaman' ?></h1>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/pages.php')) ?>">&larr; Kembali</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/pages.php')) ?>">&larr; Kembali</a>
 </div>
 <?php if ($errors): ?>
     <div class="alert alert-danger"><strong>Perbaiki hal berikut:</strong>
@@ -99,7 +99,7 @@ admin_layout_start($item ? 'Edit Halaman' : 'Tambah Halaman', 'pages');
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan Halaman</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/pages.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/pages.php')) ?>">Batal</a>
     </div>
 </form>
 <?php

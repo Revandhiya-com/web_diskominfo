@@ -22,9 +22,9 @@ if (is_post()) {
             }
             q_exec('DELETE FROM videos WHERE id = ?', [$id]);
             log_activity('delete', 'video', $id, 'Hapus media: ' . $v['title']);
-            flash_redirect('success', 'Media dan filenya dihapus.', 'admin/videos.php');
+            flash_redirect('success', 'Media dan filenya dihapus.', 'panel/videos.php');
         }
-        flash_redirect('danger', 'Media tidak ditemukan.', 'admin/videos.php');
+        flash_redirect('danger', 'Media tidak ditemukan.', 'panel/videos.php');
     }
 }
 
@@ -45,14 +45,14 @@ admin_layout_start('Video & Media', 'videos');
 ?>
 <div class="admin-card mb-3">
     <div class="admin-card-head"><h2>Video &amp; Media</h2>
-        <a class="btn btn-sm btn-primary" href="<?= e(base_url('admin/video-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Media</a></div>
+        <a class="btn btn-sm btn-primary" href="<?= e(base_url('panel/video-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Media</a></div>
     <div class="admin-card-body">
         <form method="get" class="row g-2 align-items-end">
             <div class="col-md-6"><label class="form-label-admin">Cari</label>
                 <input class="form-control" type="text" name="q" value="<?= e($q) ?>" placeholder="Judul / deskripsi…"></div>
             <div class="col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-primary flex-fill" type="submit"><i class="bi bi-search"></i></button>
-                <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/videos.php')) ?>"><i class="bi bi-x-lg"></i></a>
+                <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/videos.php')) ?>"><i class="bi bi-x-lg"></i></a>
             </div>
         </form>
     </div>
@@ -109,7 +109,7 @@ admin_layout_start('Video & Media', 'videos');
                                 <?php if ($m['status'] === 'published'): ?>
                                     <a class="btn-admin-sm" href="<?= e(base_url('?page=video#v' . (int) $m['id'])) ?>" target="_blank" rel="noopener" title="Lihat di situs publik"><i class="bi bi-box-arrow-up-right"></i>Lihat</a>
                                 <?php endif; ?>
-                                <a class="btn-admin-sm" href="<?= e(base_url('admin/video-form.php?id=' . (int) $m['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
+                                <a class="btn-admin-sm" href="<?= e(base_url('panel/video-form.php?id=' . (int) $m['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
                                 <form method="post" class="d-inline" data-confirm="Hapus media ini beserta filenya dari server?">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="delete">

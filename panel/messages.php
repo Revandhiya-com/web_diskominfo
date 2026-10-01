@@ -14,20 +14,20 @@ if (is_post()) {
 
     if ($action === 'read' && $id > 0) {
         q_exec('UPDATE contact_messages SET is_read = 1 WHERE id = ?', [$id]);
-        redirect('admin/messages.php?view=' . $id);
+        redirect('panel/messages.php?view=' . $id);
     }
     if ($action === 'unread' && $id > 0) {
         q_exec('UPDATE contact_messages SET is_read = 0 WHERE id = ?', [$id]);
-        flash_redirect('success', 'Pesan ditandai belum dibaca.', 'admin/messages.php');
+        flash_redirect('success', 'Pesan ditandai belum dibaca.', 'panel/messages.php');
     }
     if ($action === 'delete' && $id > 0) {
         $m = q_one('SELECT id, name FROM contact_messages WHERE id = ?', [$id]);
         if ($m) {
             q_exec('DELETE FROM contact_messages WHERE id = ?', [$id]);
             log_activity('delete', 'message', $id, 'Hapus pesan dari: ' . $m['name']);
-            flash_redirect('success', 'Pesan dihapus.', 'admin/messages.php');
+            flash_redirect('success', 'Pesan dihapus.', 'panel/messages.php');
         }
-        flash_redirect('danger', 'Pesan tidak ditemukan.', 'admin/messages.php');
+        flash_redirect('danger', 'Pesan tidak ditemukan.', 'panel/messages.php');
     }
 }
 
@@ -64,7 +64,7 @@ admin_layout_start('Pesan Masuk', 'messages');
                     <?php else: foreach ($messages as $m): ?>
                         <?php if ($q === ''): ?>
                             <a class="list-group-item list-group-item-action d-flex justify-content-between align-items-start gap-2 <?= $current && (int) $current['id'] === (int) $m['id'] ? 'active' : '' ?>"
-                               href="<?= e(base_url('admin/messages.php?view=' . (int) $m['id'])) ?>">
+                               href="<?= e(base_url('panel/messages.php?view=' . (int) $m['id'])) ?>">
                                 <div class="min-w-0" style="min-width:0">
                                     <div class="small fw-bold <?= (int) $m['is_read'] ? 'text-body' : 'text-primary' ?>"><?= (int) $m['is_read'] ? '' : '● ' ?><?= e($m['name']) ?></div>
                                     <div class="small text-truncate"><?= e($m['subject'] ?: '(tanpa subjek)') ?></div>
@@ -73,7 +73,7 @@ admin_layout_start('Pesan Masuk', 'messages');
                             </a>
                         <?php else: ?>
                             <div class="list-group-item">
-                                <a href="<?= e(base_url('admin/messages.php?view=' . (int) $m['id'])) ?>"><strong><?= e($m['name']) ?></strong></a>
+                                <a href="<?= e(base_url('panel/messages.php?view=' . (int) $m['id'])) ?>"><strong><?= e($m['name']) ?></strong></a>
                                 <div class="small text-muted"><?= e($m['subject'] ?: '-') ?> · <?= e(format_date_id($m['created_at'], true)) ?></div>
                             </div>
                         <?php endif; ?>

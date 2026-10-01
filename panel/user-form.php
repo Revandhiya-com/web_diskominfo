@@ -10,7 +10,7 @@ require __DIR__ . '/includes/layout.php';
 $id = (int) get_val('id');
 $item = $id > 0 ? q_one('SELECT * FROM users WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$item) {
-    flash_redirect('danger', 'Pengguna tidak ditemukan.', 'admin/users.php');
+    flash_redirect('danger', 'Pengguna tidak ditemukan.', 'panel/users.php');
 }
 
 $errors = [];
@@ -67,7 +67,7 @@ if (is_post()) {
                 q_exec('UPDATE users SET name=?, username=?, email=?, role=?, is_active=? WHERE id=?', $params);
             }
             log_activity('update', 'user', $id, 'Perbarui pengguna: ' . $name);
-            flash_redirect('success', 'Pengguna disimpan.', 'admin/users.php');
+            flash_redirect('success', 'Pengguna disimpan.', 'panel/users.php');
         }
         $ok = q_exec(
             'INSERT INTO users (name, username, email, password, role, is_active) VALUES (?,?,?,?,?,?)',
@@ -75,7 +75,7 @@ if (is_post()) {
         );
         $newId = $ok ? (int) db()->lastInsertId() : 0;
         log_activity('create', 'user', $newId, 'Buat pengguna: ' . $name);
-        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Pengguna dibuat.' : 'Gagal menyimpan pengguna.', 'admin/users.php');
+        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Pengguna dibuat.' : 'Gagal menyimpan pengguna.', 'panel/users.php');
     }
 }
 
@@ -83,7 +83,7 @@ admin_layout_start($item ? 'Edit Pengguna' : 'Tambah Pengguna', 'users');
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0"><?= $item ? 'Edit Pengguna' : 'Tambah Pengguna' ?></h1>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/users.php')) ?>">&larr; Kembali</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/users.php')) ?>">&larr; Kembali</a>
 </div>
 <?php if ($errors): ?>
     <div class="alert alert-danger"><strong>Perbaiki hal berikut:</strong>
@@ -131,7 +131,7 @@ admin_layout_start($item ? 'Edit Pengguna' : 'Tambah Pengguna', 'users');
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan Pengguna</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/users.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/users.php')) ?>">Batal</a>
     </div>
 </form>
 <?php

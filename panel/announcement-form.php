@@ -8,7 +8,7 @@ require __DIR__ . '/includes/layout.php';
 $id = (int) get_val('id');
 $item = $id > 0 ? q_one('SELECT * FROM announcements WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$item) {
-    flash_redirect('danger', 'Pengumuman tidak ditemukan.', 'admin/announcements.php');
+    flash_redirect('danger', 'Pengumuman tidak ditemukan.', 'panel/announcements.php');
 }
 
 $errors = [];
@@ -38,13 +38,13 @@ if (is_post()) {
             $ok = q_exec('UPDATE announcements SET title=?, content=?, source_url=?, is_pinned=?, status=?, published_at=? WHERE id=?',
                 [$title, $content ?: null, $sourceUrl ?: null, $isPinned, $status, $publishedAt ?: null, $id]);
             log_activity('update', 'announcement', $id, 'Perbarui pengumuman: ' . $title);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Pengumuman disimpan.' : 'Gagal menyimpan.', 'admin/announcements.php');
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Pengumuman disimpan.' : 'Gagal menyimpan.', 'panel/announcements.php');
         }
         $ok = q_exec('INSERT INTO announcements (title, content, source_url, is_pinned, status, published_at) VALUES (?,?,?,?,?,?)',
             [$title, $content ?: null, $sourceUrl ?: null, $isPinned, $status, $publishedAt ?: null]);
         $newId = $ok ? (int) db()->lastInsertId() : 0;
         log_activity('create', 'announcement', $newId, 'Buat pengumuman: ' . $title);
-        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Pengumuman dibuat.' : 'Gagal menyimpan.', 'admin/announcements.php');
+        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Pengumuman dibuat.' : 'Gagal menyimpan.', 'panel/announcements.php');
     }
 }
 
@@ -52,7 +52,7 @@ admin_layout_start($item ? 'Edit Pengumuman' : 'Tambah Pengumuman', 'announcemen
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0"><?= $item ? 'Edit Pengumuman' : 'Tambah Pengumuman' ?></h1>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/announcements.php')) ?>">&larr; Kembali</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/announcements.php')) ?>">&larr; Kembali</a>
 </div>
 <?php if ($errors): ?>
     <div class="alert alert-danger"><strong>Perbaiki hal berikut:</strong>
@@ -98,7 +98,7 @@ admin_layout_start($item ? 'Edit Pengumuman' : 'Tambah Pengumuman', 'announcemen
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan Pengumuman</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/announcements.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/announcements.php')) ?>">Batal</a>
     </div>
 </form>
 <?php

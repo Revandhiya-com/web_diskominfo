@@ -44,7 +44,7 @@ admin_layout_start('Dashboard', 'dashboard');
     <div class="col-12">
         <div class="admin-stat-grid">
             <?php foreach ($stats as $i => $s): ?>
-                <a class="admin-stat" href="<?= e(base_url('admin/' . $s[3])) ?>">
+                <a class="admin-stat" href="<?= e(base_url('panel/' . $s[3])) ?>">
                     <span class="admin-stat-icon"><i class="bi <?= e($s[2]) ?>"></i></span>
                     <span>
                         <span class="admin-stat-value"><?= e(number_format($s[1])) ?></span>
@@ -59,7 +59,7 @@ admin_layout_start('Dashboard', 'dashboard');
             <span class="admin-stat-icon"><i class="bi bi-people"></i></span>
             <span>
                 <span class="admin-stat-value"><?= e(number_format($counts['users'])) ?></span>
-                <span class="admin-stat-label d-block">Pengguna aktif — <a href="<?= e(base_url('admin/users.php')) ?>">kelola</a> (khusus admin)</span>
+                <span class="admin-stat-label d-block">Pengguna aktif — <a href="<?= e(base_url('panel/users.php')) ?>">kelola</a> (khusus admin)</span>
             </span>
         </div>
     </div>
@@ -68,7 +68,7 @@ admin_layout_start('Dashboard', 'dashboard');
             <span class="admin-stat-icon"><i class="bi bi-envelope"></i></span>
             <span>
                 <span class="admin-stat-value"><?= e(number_format($counts['messages_unread'])) ?> / <?= e(number_format($counts['messages'])) ?></span>
-                <span class="admin-stat-label d-block">Pesan masuk belum dibaca / total — <a href="<?= e(base_url('admin/messages.php')) ?>">buka</a></span>
+                <span class="admin-stat-label d-block">Pesan masuk belum dibaca / total — <a href="<?= e(base_url('panel/messages.php')) ?>">buka</a></span>
             </span>
         </div>
     </div>
@@ -79,7 +79,7 @@ admin_layout_start('Dashboard', 'dashboard');
         <div class="admin-card mb-3">
             <div class="admin-card-head">
                 <h2>Berita Terbaru</h2>
-                <a class="btn-admin-sm" href="<?= e(base_url('admin/news.php')) ?>">Kelola</a>
+                <a class="btn-admin-sm" href="<?= e(base_url('panel/news.php')) ?>">Kelola</a>
             </div>
             <div class="admin-card-body p-0">
                 <table class="table table-admin mb-0">
@@ -100,7 +100,7 @@ admin_layout_start('Dashboard', 'dashboard');
         <div class="admin-card mb-3">
             <div class="admin-card-head">
                 <h2>Pesan Masuk Terbaru</h2>
-                <a class="btn-admin-sm" href="<?= e(base_url('admin/messages.php')) ?>">Kelola</a>
+                <a class="btn-admin-sm" href="<?= e(base_url('panel/messages.php')) ?>">Kelola</a>
             </div>
             <div class="admin-card-body p-0">
                 <table class="table table-admin mb-0">
@@ -128,7 +128,7 @@ admin_layout_start('Dashboard', 'dashboard');
         <div class="admin-card mb-3">
             <div class="admin-card-head">
                 <h2>Dokumentasi Terbaru</h2>
-                <a class="btn-admin-sm" href="<?= e(base_url('admin/albums.php')) ?>">Kelola</a>
+                <a class="btn-admin-sm" href="<?= e(base_url('panel/albums.php')) ?>">Kelola</a>
             </div>
             <div class="admin-card-body p-0">
                 <table class="table table-admin mb-0">

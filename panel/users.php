@@ -12,15 +12,15 @@ if (is_post()) {
     if (post_val('action') === 'delete') {
         $id = (int) post_val('id');
         if ($id === (int) current_user()['id']) {
-            flash_redirect('danger', 'Tidak bisa menghapus akun sendiri.', 'admin/users.php');
+            flash_redirect('danger', 'Tidak bisa menghapus akun sendiri.', 'panel/users.php');
         }
         $u = q_one('SELECT id, name FROM users WHERE id = ?', [$id]);
         if ($u) {
             q_exec('DELETE FROM users WHERE id = ?', [$id]);
             log_activity('delete', 'user', $id, 'Hapus pengguna: ' . $u['name']);
-            flash_redirect('success', 'Pengguna dihapus.', 'admin/users.php');
+            flash_redirect('success', 'Pengguna dihapus.', 'panel/users.php');
         }
-        flash_redirect('danger', 'Pengguna tidak ditemukan.', 'admin/users.php');
+        flash_redirect('danger', 'Pengguna tidak ditemukan.', 'panel/users.php');
     }
 }
 
@@ -50,7 +50,7 @@ admin_layout_start('Pengguna', 'users');
 <div class="admin-card mb-3">
     <div class="admin-card-head">
         <h2>Pengguna</h2>
-        <a class="btn btn-sm btn-primary" href="<?= e(base_url('admin/user-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Pengguna</a>
+        <a class="btn btn-sm btn-primary" href="<?= e(base_url('panel/user-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Pengguna</a>
     </div>
     <div class="admin-card-body">
         <form method="get" class="row g-2 align-items-end">
@@ -60,7 +60,7 @@ admin_layout_start('Pengguna', 'users');
             </div>
             <div class="col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-primary flex-fill" type="submit"><i class="bi bi-search"></i></button>
-                <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/users.php')) ?>"><i class="bi bi-x-lg"></i></a>
+                <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/users.php')) ?>"><i class="bi bi-x-lg"></i></a>
             </div>
         </form>
     </div>
@@ -93,7 +93,7 @@ admin_layout_start('Pengguna', 'users');
                         <td><?= e($u['last_login_at'] ? format_date_id($u['last_login_at'], true) : '-') ?></td>
                         <td class="text-end">
                             <div class="admin-actions justify-content-end">
-                                <a class="btn-admin-sm" href="<?= e(base_url('admin/user-form.php?id=' . (int) $u['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
+                                <a class="btn-admin-sm" href="<?= e(base_url('panel/user-form.php?id=' . (int) $u['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
                                 <?php if ((int) $u['id'] !== $me): ?>
                                     <form method="post" class="d-inline" data-confirm="Hapus pengguna ini?">
                                         <?= csrf_field() ?>

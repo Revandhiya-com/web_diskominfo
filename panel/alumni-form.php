@@ -8,7 +8,7 @@ require __DIR__ . '/includes/layout.php';
 $id = (int) get_val('id');
 $item = $id > 0 ? q_one('SELECT * FROM alumni WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$item) {
-    flash_redirect('danger', 'Alumni tidak ditemukan.', 'admin/alumni.php');
+    flash_redirect('danger', 'Alumni tidak ditemukan.', 'panel/alumni.php');
 }
 
 $errors = [];
@@ -107,7 +107,7 @@ if (is_post()) {
                 );
                 log_activity('create', 'alumni', $ok ? (int) db()->lastInsertId() : 0, 'Tambah alumni: ' . $name);
             }
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Data alumni disimpan.' : 'Gagal menyimpan data alumni.', 'admin/alumni.php');
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Data alumni disimpan.' : 'Gagal menyimpan data alumni.', 'panel/alumni.php');
         }
     }
 }
@@ -116,7 +116,7 @@ admin_layout_start($item ? 'Edit Alumni' : 'Tambah Alumni', 'alumni');
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0"><?= $item ? 'Edit Alumni' : 'Tambah Alumni' ?></h1>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/alumni.php')) ?>">&larr; Kembali</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/alumni.php')) ?>">&larr; Kembali</a>
 </div>
 
 <?php if ($errors): ?>
@@ -193,7 +193,7 @@ admin_layout_start($item ? 'Edit Alumni' : 'Tambah Alumni', 'alumni');
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan Alumni</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/alumni.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/alumni.php')) ?>">Batal</a>
     </div>
 </form>
 <?php

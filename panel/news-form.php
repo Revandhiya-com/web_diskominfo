@@ -85,7 +85,7 @@ function process_news_gallery(int $newsId): array
 $id = (int) get_val('id');
 $item = $id > 0 ? q_one('SELECT * FROM news WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$item) {
-    flash_redirect('danger', 'Berita tidak ditemukan.', 'admin/news.php');
+    flash_redirect('danger', 'Berita tidak ditemukan.', 'panel/news.php');
 }
 
 $errors = [];
@@ -152,12 +152,12 @@ if (is_post()) {
                     flash_redirect(
                         'warning',
                         'Berita disimpan. Catatan galeri foto: ' . implode('; ', $galleryErrors),
-                        'admin/news.php'
+                        'panel/news.php'
                     );
                 }
-                flash_redirect('success', 'Berita disimpan.', 'admin/news.php');
+                flash_redirect('success', 'Berita disimpan.', 'panel/news.php');
             } else {
-                flash_redirect('danger', 'Gagal menyimpan berita.', 'admin/news.php');
+                flash_redirect('danger', 'Gagal menyimpan berita.', 'panel/news.php');
             }
         }
     }
@@ -173,7 +173,7 @@ admin_layout_start($item ? 'Edit Berita' : 'Tambah Berita', 'news');
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0"><?= $item ? 'Edit Berita' : 'Tambah Berita' ?></h1>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/news.php')) ?>">&larr; Kembali</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/news.php')) ?>">&larr; Kembali</a>
 </div>
 
 <?php if ($errors): ?>
@@ -302,7 +302,7 @@ admin_layout_start($item ? 'Edit Berita' : 'Tambah Berita', 'news');
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan Berita</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/news.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/news.php')) ?>">Batal</a>
     </div>
 </form>
 <?php

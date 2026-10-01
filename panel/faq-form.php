@@ -8,7 +8,7 @@ require __DIR__ . '/includes/layout.php';
 $id = (int) get_val('id');
 $item = $id > 0 ? q_one('SELECT * FROM faqs WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$item) {
-    flash_redirect('danger', 'FAQ tidak ditemukan.', 'admin/faqs.php');
+    flash_redirect('danger', 'FAQ tidak ditemukan.', 'panel/faqs.php');
 }
 
 $errors = [];
@@ -35,14 +35,14 @@ if (is_post()) {
             $ok = q_exec('UPDATE faqs SET question=?, answer=?, category=?, sort_order=?, is_active=? WHERE id=?',
                 [$question, $answer, $category ?: null, $sortOrder, $isActive, $id]);
             log_activity('update', 'faq', $id, 'Perbarui FAQ: ' . $question);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'FAQ disimpan.' : 'Gagal menyimpan.', 'admin/faqs.php');
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'FAQ disimpan.' : 'Gagal menyimpan.', 'panel/faqs.php');
         }
         $maxOrder = (int) (q_one('SELECT COALESCE(MAX(sort_order),0) n FROM faqs')['n'] ?? 0);
         $ok = q_exec('INSERT INTO faqs (question, answer, category, sort_order, is_active) VALUES (?,?,?,?,?)',
             [$question, $answer, $category ?: null, $sortOrder > 0 ? $sortOrder : $maxOrder + 1, $isActive]);
         $newId = $ok ? (int) db()->lastInsertId() : 0;
         log_activity('create', 'faq', $newId, 'Buat FAQ: ' . $question);
-        flash_redirect($ok ? 'success' : 'danger', $ok ? 'FAQ dibuat.' : 'Gagal menyimpan.', 'admin/faqs.php');
+        flash_redirect($ok ? 'success' : 'danger', $ok ? 'FAQ dibuat.' : 'Gagal menyimpan.', 'panel/faqs.php');
     }
 }
 
@@ -50,7 +50,7 @@ admin_layout_start($item ? 'Edit FAQ' : 'Tambah FAQ', 'faqs');
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0"><?= $item ? 'Edit FAQ' : 'Tambah FAQ' ?></h1>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/faqs.php')) ?>">&larr; Kembali</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/faqs.php')) ?>">&larr; Kembali</a>
 </div>
 <?php if ($errors): ?>
     <div class="alert alert-danger"><strong>Perbaiki hal berikut:</strong>
@@ -87,7 +87,7 @@ admin_layout_start($item ? 'Edit FAQ' : 'Tambah FAQ', 'faqs');
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan FAQ</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/faqs.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/faqs.php')) ?>">Batal</a>
     </div>
 </form>
 <?php

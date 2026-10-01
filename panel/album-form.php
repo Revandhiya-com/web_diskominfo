@@ -8,7 +8,7 @@ require __DIR__ . '/includes/layout.php';
 $id = (int) get_val('id');
 $album = $id > 0 ? q_one('SELECT * FROM albums WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$album) {
-    flash_redirect('danger', 'Album tidak ditemukan.', 'admin/albums.php');
+    flash_redirect('danger', 'Album tidak ditemukan.', 'panel/albums.php');
 }
 
 $errors = [];
@@ -60,7 +60,7 @@ if (is_post()) {
                 $coverImage = null;
             }
             log_activity('update', 'album', $id, 'Perbarui album: ' . $title);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Album berhasil diperbarui.' : 'Gagal menyimpan album.', 'admin/albums.php');
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Album berhasil diperbarui.' : 'Gagal menyimpan album.', 'panel/albums.php');
         } else {
             $ok = q_exec(
                 'INSERT INTO albums (title, slug, description, category_id, location, event_date, cover_image, status, created_by) VALUES (?,?,?,?,?,?,?,?,?)',
@@ -70,7 +70,7 @@ if (is_post()) {
                 $newId = (int) db()->lastInsertId();
             }
             log_activity('create', 'album', $newId ?? 0, 'Buat album: ' . $title);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Album berhasil dibuat.' : 'Gagal menyimpan album.', $ok ? 'admin/photos.php?album=' . ($newId ?? 0) : 'admin/albums.php');
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Album berhasil dibuat.' : 'Gagal menyimpan album.', $ok ? 'panel/photos.php?album=' . ($newId ?? 0) : 'panel/albums.php');
         }
     }
 }
@@ -84,7 +84,7 @@ admin_layout_start($album ? 'Edit Album' : 'Tambah Album', 'albums');
         <h1 class="h4 mb-1"><?= $album ? 'Edit Album' : 'Tambah Album' ?></h1>
         <p class="text-muted small mb-0">Sampul dan foto disimpan di folder upload — database hanya menyimpan path-nya.</p>
     </div>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/albums.php')) ?>">&larr; Kembali ke daftar</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/albums.php')) ?>">&larr; Kembali ke daftar</a>
 </div>
 
 <?php if ($errors): ?>
@@ -156,7 +156,7 @@ admin_layout_start($album ? 'Edit Album' : 'Tambah Album', 'albums');
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan Album</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/albums.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/albums.php')) ?>">Batal</a>
     </div>
 </form>
 <?php

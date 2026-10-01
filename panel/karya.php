@@ -43,9 +43,9 @@ if (is_post()) {
                 q_exec("UPDATE videos SET status = ?, updated_at = NOW() WHERE id = ? AND source = 'karya'", [$vStatus, (int) $k['video_id']]);
             }
             log_activity('update', 'karya', $id, ($new === 'published' ? 'Terbitkan' : 'Tarik ke draf') . ' karya: ' . $k['title']);
-            flash_redirect('success', 'Status karya diubah.', 'admin/karya.php');
+            flash_redirect('success', 'Status karya diubah.', 'panel/karya.php');
         }
-        flash_redirect('danger', 'Karya tidak ditemukan.', 'admin/karya.php');
+        flash_redirect('danger', 'Karya tidak ditemukan.', 'panel/karya.php');
     }
     if (post_val('action') === 'delete') {
         $id = (int) post_val('id');
@@ -74,9 +74,9 @@ if (is_post()) {
             }
             q_exec('DELETE FROM karya WHERE id = ?', [$id]);
             log_activity('delete', 'karya', $id, 'Hapus karya: ' . $k['title']);
-            flash_redirect('success', 'Karya dan file miliknya dihapus.', 'admin/karya.php');
+            flash_redirect('success', 'Karya dan file miliknya dihapus.', 'panel/karya.php');
         }
-        flash_redirect('danger', 'Karya tidak ditemukan.', 'admin/karya.php');
+        flash_redirect('danger', 'Karya tidak ditemukan.', 'panel/karya.php');
     }
 }
 
@@ -116,7 +116,7 @@ admin_layout_start('Karya Peserta', 'karya');
 ?>
 <div class="admin-card mb-3">
     <div class="admin-card-head"><h2>Karya Peserta</h2>
-        <a class="btn btn-sm btn-primary" href="<?= e(base_url('admin/karya-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Karya</a></div>
+        <a class="btn btn-sm btn-primary" href="<?= e(base_url('panel/karya-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Karya</a></div>
     <div class="admin-card-body">
         <form method="get" class="row g-2 align-items-end">
             <div class="col-md-5"><label class="form-label-admin">Cari</label>
@@ -137,7 +137,7 @@ admin_layout_start('Karya Peserta', 'karya');
                 </select></div>
             <div class="col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-primary flex-fill" type="submit"><i class="bi bi-search"></i></button>
-                <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/karya.php')) ?>"><i class="bi bi-x-lg"></i></a>
+                <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/karya.php')) ?>"><i class="bi bi-x-lg"></i></a>
             </div>
         </form>
     </div>
@@ -196,7 +196,7 @@ admin_layout_start('Karya Peserta', 'karya');
                                 <?php if ($k['status'] === 'published'): ?>
                                     <a class="btn-admin-sm" href="<?= e(base_url('?page=detail-karya&id=' . (int) $k['id'])) ?>" target="_blank" rel="noopener" title="Lihat di situs publik"><i class="bi bi-box-arrow-up-right"></i>Lihat</a>
                                 <?php endif; ?>
-                                <a class="btn-admin-sm" href="<?= e(base_url('admin/karya-form.php?id=' . (int) $k['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
+                                <a class="btn-admin-sm" href="<?= e(base_url('panel/karya-form.php?id=' . (int) $k['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
                                 <form method="post" class="d-inline" data-confirm="Hapus karya ini? File milik karya ikut dihapus; video pustaka yang dibagikan tidak terhapus.">
                                     <?= csrf_field() ?>
                                     <input type="hidden" name="action" value="delete">

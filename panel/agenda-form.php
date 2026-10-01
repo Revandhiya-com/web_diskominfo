@@ -8,7 +8,7 @@ require __DIR__ . '/includes/layout.php';
 $id = (int) get_val('id');
 $item = $id > 0 ? q_one('SELECT * FROM agendas WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$item) {
-    flash_redirect('danger', 'Agenda tidak ditemukan.', 'admin/agendas.php');
+    flash_redirect('danger', 'Agenda tidak ditemukan.', 'panel/agendas.php');
 }
 
 $errors = [];
@@ -47,13 +47,13 @@ if (is_post()) {
             $ok = q_exec('UPDATE agendas SET title=?, description=?, location=?, source_url=?, start_datetime=?, end_datetime=?, status=? WHERE id=?',
                 [$title, $description ?: null, $location ?: null, $sourceUrl ?: null, $startDt, $endDt ?: null, $status, $id]);
             log_activity('update', 'agenda', $id, 'Perbarui agenda: ' . $title);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Agenda disimpan.' : 'Gagal menyimpan.', 'admin/agendas.php');
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Agenda disimpan.' : 'Gagal menyimpan.', 'panel/agendas.php');
         }
         $ok = q_exec('INSERT INTO agendas (title, description, location, source_url, start_datetime, end_datetime, status) VALUES (?,?,?,?,?,?,?)',
             [$title, $description ?: null, $location ?: null, $sourceUrl ?: null, $startDt, $endDt ?: null, $status]);
         $newId = $ok ? (int) db()->lastInsertId() : 0;
         log_activity('create', 'agenda', $newId, 'Buat agenda: ' . $title);
-        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Agenda dibuat.' : 'Gagal menyimpan.', 'admin/agendas.php');
+        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Agenda dibuat.' : 'Gagal menyimpan.', 'panel/agendas.php');
     }
 }
 
@@ -61,7 +61,7 @@ admin_layout_start($item ? 'Edit Agenda' : 'Tambah Agenda', 'agendas');
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0"><?= $item ? 'Edit Agenda' : 'Tambah Agenda' ?></h1>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/agendas.php')) ?>">&larr; Kembali</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/agendas.php')) ?>">&larr; Kembali</a>
 </div>
 <?php if ($errors): ?>
     <div class="alert alert-danger"><strong>Perbaiki hal berikut:</strong>
@@ -110,7 +110,7 @@ admin_layout_start($item ? 'Edit Agenda' : 'Tambah Agenda', 'agendas');
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan Agenda</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/agendas.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/agendas.php')) ?>">Batal</a>
     </div>
 </form>
 <?php

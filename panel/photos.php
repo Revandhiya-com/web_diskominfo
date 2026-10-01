@@ -9,14 +9,14 @@ require __DIR__ . '/includes/layout.php';
 $albumId = (int) get_val('album');
 $album = q_one('SELECT id, title, slug, cover_image, created_by FROM albums WHERE id = ?', [$albumId]);
 if (!$album) {
-    flash_redirect('danger', 'Album tidak ditemukan.', 'admin/albums.php');
+    flash_redirect('danger', 'Album tidak ditemukan.', 'panel/albums.php');
 }
 
 if (is_post()) {
     /* POST melebihi post_max_size server → PHP membuang seluruh body (POST/FILES kosong).
        Beri pesan jelas alih-alih error CSRF yang membingungkan. */
     if (empty($_POST) && empty($_FILES) && (int) ($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
-        flash_redirect('danger', 'Ukuran total unggahan melebihi batas server (maks ' . format_size(UPLOAD_VIDEO_MAX_SIZE) . ' per file). Kompres video atau unggah beberapa bagian.', 'admin/photos.php?album=' . $albumId);
+        flash_redirect('danger', 'Ukuran total unggahan melebihi batas server (maks ' . format_size(UPLOAD_VIDEO_MAX_SIZE) . ' per file). Kompres video atau unggah beberapa bagian.', 'panel/photos.php?album=' . $albumId);
     }
     require_csrf();
     $action = post_val('action');
@@ -29,7 +29,7 @@ if (is_post()) {
         $count = is_array($files['name'] ?? null) ? count($files['name']) : 0;
 
         if ($count === 0) {
-            flash_redirect('warning', 'Pilih minimal satu file (foto: jpg/jpeg/png/webp atau video: mp4/webm/mov).', 'admin/photos.php?album=' . $albumId);
+            flash_redirect('warning', 'Pilih minimal satu file (foto: jpg/jpeg/png/webp atau video: mp4/webm/mov).', 'panel/photos.php?album=' . $albumId);
         }
 
         $nextOrder = (int) (q_one('SELECT COALESCE(MAX(sort_order), 0) + 1 AS n FROM photos WHERE album_id = ?', [$albumId])['n'] ?? 1);
@@ -62,7 +62,7 @@ if (is_post()) {
         if ($failed) {
             $msg .= ' Gagal: ' . implode(' | ', $failed);
         }
-        flash_redirect($failed && $uploaded === 0 ? 'danger' : ($failed ? 'warning' : 'success'), $msg, 'admin/photos.php?album=' . $albumId);
+        flash_redirect($failed && $uploaded === 0 ? 'danger' : ($failed ? 'warning' : 'success'), $msg, 'panel/photos.php?album=' . $albumId);
     }
 
     if ($action === 'reorder') {
@@ -72,7 +72,7 @@ if (is_post()) {
             $ok = q_exec('UPDATE photos SET sort_order = ? WHERE id = ? AND album_id = ?', [(int) $sort, (int) $pid, $albumId]) && $ok;
         }
         log_activity('reorder', 'photo', $albumId, 'Perbarui urutan foto: ' . $album['title']);
-        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Urutan foto disimpan.' : 'Gagal menyimpan urutan.', 'admin/photos.php?album=' . $albumId);
+        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Urutan foto disimpan.' : 'Gagal menyimpan urutan.', 'panel/photos.php?album=' . $albumId);
     }
 
     if ($action === 'captions') {
@@ -83,7 +83,7 @@ if (is_post()) {
             $ok = q_exec('UPDATE photos SET caption = ? WHERE id = ? AND album_id = ?', [$cap !== '' ? $cap : null, (int) $pid, $albumId]) && $ok;
         }
         log_activity('update', 'photo', $albumId, 'Perbarui caption foto: ' . $album['title']);
-        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Caption disimpan.' : 'Gagal menyimpan caption.', 'admin/photos.php?album=' . $albumId);
+        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Caption disimpan.' : 'Gagal menyimpan caption.', 'panel/photos.php?album=' . $albumId);
     }
 
     if ($action === 'move') {
@@ -104,7 +104,7 @@ if (is_post()) {
                 q_exec('UPDATE photos SET sort_order = ? WHERE id = ?', [(int) $photos[$idx]['sort_order'], (int) $photos[$swap]['id']]);
             }
         }
-        redirect('admin/photos.php?album=' . $albumId);
+        redirect('panel/photos.php?album=' . $albumId);
     }
 
     if ($action === 'delete_photo') {
@@ -117,9 +117,9 @@ if (is_post()) {
                 q_exec('UPDATE albums SET cover_image = NULL WHERE id = ? AND cover_image = ?', [$albumId, $photo['image']]);
             }
             log_activity('delete', 'photo', $albumId, 'Hapus foto dari album: ' . $album['title']);
-            flash_redirect('success', 'Foto dihapus.', 'admin/photos.php?album=' . $albumId);
+            flash_redirect('success', 'Foto dihapus.', 'panel/photos.php?album=' . $albumId);
         }
-        flash_redirect('danger', 'Foto tidak ditemukan.', 'admin/photos.php?album=' . $albumId);
+        flash_redirect('danger', 'Foto tidak ditemukan.', 'panel/photos.php?album=' . $albumId);
     }
 }
 
@@ -139,8 +139,8 @@ admin_layout_start('Media — ' . $album['title'], 'albums');
         <p class="text-muted small mb-0"><?= e(number_format($photoCount)) ?> media · simpan dulu album bila baru dibuat.</p>
     </div>
     <div class="d-flex gap-2">
-        <a class="btn-admin-sm" href="<?= e(base_url('admin/album-form.php?id=' . (int) $album['id'])) ?>"><i class="bi bi-pencil"></i>Edit Album</a>
-        <a class="btn-admin-sm" href="<?= e(base_url('admin/albums.php')) ?>">&larr; Daftar Album</a>
+        <a class="btn-admin-sm" href="<?= e(base_url('panel/album-form.php?id=' . (int) $album['id'])) ?>"><i class="bi bi-pencil"></i>Edit Album</a>
+        <a class="btn-admin-sm" href="<?= e(base_url('panel/albums.php')) ?>">&larr; Daftar Album</a>
     </div>
 </div>
 
@@ -187,7 +187,7 @@ admin_layout_start('Media — ' . $album['title'], 'albums');
                         <?php endif; ?>
                         <span class="photo-order">Urutan <?= (int) $p['sort_order'] ?></span>
                         <span class="photo-actions">
-                            <a href="<?= e(base_url('admin/photos.php?album=' . $albumId . '&')) ?>" class="d-none" aria-hidden="true"></a>
+                            <a href="<?= e(base_url('panel/photos.php?album=' . $albumId . '&')) ?>" class="d-none" aria-hidden="true"></a>
                             <form method="post" class="d-inline-flex">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="move">

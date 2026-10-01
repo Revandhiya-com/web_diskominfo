@@ -16,9 +16,9 @@ if (is_post()) {
         if ($f) {
             q_exec('DELETE FROM faqs WHERE id = ?', [$id]);
             log_activity('delete', 'faq', $id, 'Hapus FAQ: ' . $f['question']);
-            flash_redirect('success', 'FAQ dihapus.', 'admin/faqs.php');
+            flash_redirect('success', 'FAQ dihapus.', 'panel/faqs.php');
         }
-        flash_redirect('danger', 'FAQ tidak ditemukan.', 'admin/faqs.php');
+        flash_redirect('danger', 'FAQ tidak ditemukan.', 'panel/faqs.php');
     }
 }
 
@@ -39,14 +39,14 @@ admin_layout_start('FAQ', 'faqs');
 ?>
 <div class="admin-card mb-3">
     <div class="admin-card-head"><h2>FAQ</h2>
-        <a class="btn btn-sm btn-primary" href="<?= e(base_url('admin/faq-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah FAQ</a></div>
+        <a class="btn btn-sm btn-primary" href="<?= e(base_url('panel/faq-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah FAQ</a></div>
     <div class="admin-card-body">
         <form method="get" class="row g-2 align-items-end">
             <div class="col-md-6"><label class="form-label-admin">Cari</label>
                 <input class="form-control" type="text" name="q" value="<?= e($q) ?>" placeholder="Pertanyaan / jawaban…"></div>
             <div class="col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-primary flex-fill" type="submit"><i class="bi bi-search"></i></button>
-                <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/faqs.php')) ?>"><i class="bi bi-x-lg"></i></a>
+                <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/faqs.php')) ?>"><i class="bi bi-x-lg"></i></a>
             </div>
         </form>
     </div>
@@ -74,7 +74,7 @@ admin_layout_start('FAQ', 'faqs');
                             </form>
                         </td>
                         <td class="text-end"><div class="admin-actions justify-content-end">
-                            <a class="btn-admin-sm" href="<?= e(base_url('admin/faq-form.php?id=' . (int) $f['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
+                            <a class="btn-admin-sm" href="<?= e(base_url('panel/faq-form.php?id=' . (int) $f['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
                             <form method="post" class="d-inline" data-confirm="Hapus FAQ ini?">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="delete">

@@ -66,7 +66,7 @@ function require_admin(): void
 {
     if ((current_user()['role'] ?? '') !== 'admin') {
         http_response_code(403);
-        flash_redirect('danger', 'Halaman ini khusus admin.', 'admin/index.php');
+        flash_redirect('danger', 'Halaman ini khusus admin.', 'panel/index.php');
     }
 }
 
@@ -76,7 +76,7 @@ function admin_self_url(): string
     $qs = $_GET;
     unset($qs['p']);
     $file = basename($_SERVER['SCRIPT_NAME'] ?? '');
-    return 'admin/' . $file . ($qs ? '?' . http_build_query($qs) : '');
+    return 'panel/' . $file . ($qs ? '?' . http_build_query($qs) : '');
 }
 
 /** Quick toggle publish/draft (status ENUM) lewat POST, lalu redirect balik. */

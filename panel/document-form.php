@@ -8,7 +8,7 @@ require __DIR__ . '/includes/layout.php';
 $id = (int) get_val('id');
 $item = $id > 0 ? q_one('SELECT * FROM documents WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$item) {
-    flash_redirect('danger', 'Dokumen tidak ditemukan.', 'admin/documents.php');
+    flash_redirect('danger', 'Dokumen tidak ditemukan.', 'panel/documents.php');
 }
 
 $errors = [];
@@ -49,13 +49,13 @@ if (is_post()) {
             $ok = q_exec('UPDATE documents SET category_id=?, name=?, file=?, size=?, mime=? WHERE id=?',
                 [$categoryId ?: null, $name, $oldFile, $oldSize, $oldMime, $id]);
             log_activity('update', 'document', $id, 'Perbarui dokumen: ' . $name);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Dokumen disimpan.' : 'Gagal menyimpan.', 'admin/documents.php');
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Dokumen disimpan.' : 'Gagal menyimpan.', 'panel/documents.php');
         }
         $ok = q_exec('INSERT INTO documents (category_id, name, file, size, mime) VALUES (?,?,?,?,?)',
             [$categoryId ?: null, $name, $up['name'], $up['size'], $up['mime']]);
         $newId = $ok ? (int) db()->lastInsertId() : 0;
         log_activity('create', 'document', $newId, 'Unggah dokumen: ' . $name);
-        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Dokumen diunggah.' : 'Gagal menyimpan.', 'admin/documents.php');
+        flash_redirect($ok ? 'success' : 'danger', $ok ? 'Dokumen diunggah.' : 'Gagal menyimpan.', 'panel/documents.php');
     }
 }
 
@@ -65,7 +65,7 @@ admin_layout_start($item ? 'Edit Dokumen' : 'Tambah Dokumen', 'documents');
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0"><?= $item ? 'Edit Dokumen' : 'Tambah Dokumen' ?></h1>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/documents.php')) ?>">&larr; Kembali</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/documents.php')) ?>">&larr; Kembali</a>
 </div>
 <?php if ($errors): ?>
     <div class="alert alert-danger"><strong>Perbaiki hal berikut:</strong>
@@ -100,7 +100,7 @@ admin_layout_start($item ? 'Edit Dokumen' : 'Tambah Dokumen', 'documents');
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan Dokumen</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/documents.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/documents.php')) ?>">Batal</a>
     </div>
 </form>
 <?php

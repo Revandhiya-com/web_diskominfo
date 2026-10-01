@@ -20,7 +20,7 @@ const KARYA_TIM   = ['Tim 1', 'Tim 2', 'Tim 3'];
 $id   = (int) get_val('id');
 $item = $id > 0 ? q_one('SELECT * FROM karya WHERE id = ?', [$id]) : null;
 if ($id > 0 && !$item) {
-    flash_redirect('danger', 'Karya tidak ditemukan.', 'admin/karya.php');
+    flash_redirect('danger', 'Karya tidak ditemukan.', 'panel/karya.php');
 }
 
 $errors       = [];
@@ -235,9 +235,9 @@ if (is_post()) {
                     karya_sync_video($newVideoId, $title, $description, (bool) $isEdukasi, $status);
                 }
                 log_activity('update', 'karya', $id, 'Perbarui karya: ' . $title);
-                flash_redirect('success', 'Karya disimpan.', 'admin/karya.php');
+                flash_redirect('success', 'Karya disimpan.', 'panel/karya.php');
             }
-            flash_redirect('danger', 'Gagal menyimpan karya.', 'admin/karya.php');
+            flash_redirect('danger', 'Gagal menyimpan karya.', 'panel/karya.php');
         } else {
             $ok = q_exec(
                 'INSERT INTO karya (title, description, jenis, media_type, file_path, mime_type, file_size, thumbnail, team, week_number, video_id, is_edukasi, status, published_at, created_by)
@@ -262,7 +262,7 @@ if (is_post()) {
             );
             $newId = $ok ? (int) db()->lastInsertId() : 0;
             log_activity('create', 'karya', $newId, 'Tambah karya: ' . $title);
-            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Karya ditambahkan.' : 'Gagal menyimpan karya.', 'admin/karya.php');
+            flash_redirect($ok ? 'success' : 'danger', $ok ? 'Karya ditambahkan.' : 'Gagal menyimpan karya.', 'panel/karya.php');
         }
     }
 
@@ -287,7 +287,7 @@ admin_layout_start($item ? 'Edit Karya' : 'Tambah Karya', 'karya');
 ?>
 <div class="d-flex justify-content-between align-items-center mb-3">
     <h1 class="h4 mb-0"><?= $item ? 'Edit Karya' : 'Tambah Karya' ?></h1>
-    <a class="btn-admin-sm" href="<?= e(base_url('admin/karya.php')) ?>">&larr; Kembali</a>
+    <a class="btn-admin-sm" href="<?= e(base_url('panel/karya.php')) ?>">&larr; Kembali</a>
 </div>
 
 <?php if ($errors): ?>
@@ -428,7 +428,7 @@ admin_layout_start($item ? 'Edit Karya' : 'Tambah Karya', 'karya');
     </div>
     <div class="admin-card-body border-top d-flex gap-2">
         <button class="btn btn-primary" type="submit"><i class="bi bi-check-lg me-1"></i>Simpan Karya</button>
-        <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/karya.php')) ?>">Batal</a>
+        <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/karya.php')) ?>">Batal</a>
     </div>
 </form>
 

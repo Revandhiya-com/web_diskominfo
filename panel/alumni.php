@@ -17,9 +17,9 @@ if (is_post()) {
             delete_uploaded('alumni', $a['photo']);
             q_exec('DELETE FROM alumni WHERE id = ?', [$id]);
             log_activity('delete', 'alumni', $id, 'Hapus alumni: ' . $a['name']);
-            flash_redirect('success', 'Alumni dihapus.', 'admin/alumni.php');
+            flash_redirect('success', 'Alumni dihapus.', 'panel/alumni.php');
         }
-        flash_redirect('danger', 'Alumni tidak ditemukan.', 'admin/alumni.php');
+        flash_redirect('danger', 'Alumni tidak ditemukan.', 'panel/alumni.php');
     }
 }
 
@@ -40,14 +40,14 @@ admin_layout_start('Alumni', 'alumni');
 ?>
 <div class="admin-card mb-3">
     <div class="admin-card-head"><h2>Alumni PKL &amp; Magang</h2>
-        <a class="btn btn-sm btn-primary" href="<?= e(base_url('admin/alumni-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Alumni</a></div>
+        <a class="btn btn-sm btn-primary" href="<?= e(base_url('panel/alumni-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Alumni</a></div>
     <div class="admin-card-body">
         <form method="get" class="row g-2 align-items-end">
             <div class="col-md-6"><label class="form-label-admin">Cari</label>
                 <input class="form-control" type="text" name="q" value="<?= e($q) ?>" placeholder="Nama, sekolah/kampus, jurusan, tahun…"></div>
             <div class="col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-primary flex-fill" type="submit"><i class="bi bi-search"></i></button>
-                <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/alumni.php')) ?>"><i class="bi bi-x-lg"></i></a>
+                <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/alumni.php')) ?>"><i class="bi bi-x-lg"></i></a>
             </div>
         </form>
     </div>
@@ -86,7 +86,7 @@ admin_layout_start('Alumni', 'alumni');
                         </td>
                         <td class="text-end"><div class="admin-actions justify-content-end">
                             <a class="btn-admin-sm" href="<?= e(base_url('?page=detail-alumni&slug=' . urlencode($a['slug']))) ?>" target="_blank" rel="noopener"><i class="bi bi-eye"></i>Lihat</a>
-                            <a class="btn-admin-sm" href="<?= e(base_url('admin/alumni-form.php?id=' . (int) $a['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
+                            <a class="btn-admin-sm" href="<?= e(base_url('panel/alumni-form.php?id=' . (int) $a['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
                             <form method="post" class="d-inline" data-confirm="Hapus alumni ini?">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="delete">

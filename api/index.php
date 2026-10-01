@@ -82,6 +82,13 @@ if (strpos($uri, '/panel') === 0) {
     }
 }
 
+// 2b. Auto-redirect legacy /admin URLs ke /panel
+if (strpos($uri, '/admin') === 0) {
+    $target = '/panel' . substr($uri, 6);
+    header('Location: ' . $target, true, 301);
+    exit;
+}
+
 // 3. /login shortcut
 if ($uri === '/login' || $uri === '/login.php') {
     $f = resolve_app_file('/panel/login.php');

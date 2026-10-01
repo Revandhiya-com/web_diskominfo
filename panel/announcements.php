@@ -16,9 +16,9 @@ if (is_post()) {
         if ($a) {
             q_exec('DELETE FROM announcements WHERE id = ?', [$id]);
             log_activity('delete', 'announcement', $id, 'Hapus pengumuman: ' . $a['title']);
-            flash_redirect('success', 'Pengumuman dihapus.', 'admin/announcements.php');
+            flash_redirect('success', 'Pengumuman dihapus.', 'panel/announcements.php');
         }
-        flash_redirect('danger', 'Pengumuman tidak ditemukan.', 'admin/announcements.php');
+        flash_redirect('danger', 'Pengumuman tidak ditemukan.', 'panel/announcements.php');
     }
 }
 
@@ -39,14 +39,14 @@ admin_layout_start('Pengumuman', 'announcements');
 ?>
 <div class="admin-card mb-3">
     <div class="admin-card-head"><h2>Pengumuman</h2>
-        <a class="btn btn-sm btn-primary" href="<?= e(base_url('admin/announcement-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Pengumuman</a></div>
+        <a class="btn btn-sm btn-primary" href="<?= e(base_url('panel/announcement-form.php')) ?>"><i class="bi bi-plus-lg me-1"></i>Tambah Pengumuman</a></div>
     <div class="admin-card-body">
         <form method="get" class="row g-2 align-items-end">
             <div class="col-md-6"><label class="form-label-admin">Cari</label>
                 <input class="form-control" type="text" name="q" value="<?= e($q) ?>" placeholder="Judul / isi…"></div>
             <div class="col-md-2 d-flex gap-2">
                 <button class="btn btn-outline-primary flex-fill" type="submit"><i class="bi bi-search"></i></button>
-                <a class="btn btn-outline-secondary" href="<?= e(base_url('admin/announcements.php')) ?>"><i class="bi bi-x-lg"></i></a>
+                <a class="btn btn-outline-secondary" href="<?= e(base_url('panel/announcements.php')) ?>"><i class="bi bi-x-lg"></i></a>
             </div>
         </form>
     </div>
@@ -74,7 +74,7 @@ admin_layout_start('Pengumuman', 'announcements');
                             </form>
                         </td>
                         <td class="text-end"><div class="admin-actions justify-content-end">
-                            <a class="btn-admin-sm" href="<?= e(base_url('admin/announcement-form.php?id=' . (int) $a['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
+                            <a class="btn-admin-sm" href="<?= e(base_url('panel/announcement-form.php?id=' . (int) $a['id'])) ?>"><i class="bi bi-pencil"></i>Edit</a>
                             <form method="post" class="d-inline" data-confirm="Hapus pengumuman ini?">
                                 <?= csrf_field() ?>
                                 <input type="hidden" name="action" value="delete">
