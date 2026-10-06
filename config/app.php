@@ -18,7 +18,7 @@ define('APP_TIMEZONE', 'Asia/Jakarta');
 define('APP_DEBUG', getenv('APP_DEBUG') ? (getenv('APP_DEBUG') === 'true' || getenv('APP_DEBUG') === '1') : false);
 
 // Versi aset untuk cache busting (ubah saat memperbarui CSS/JS)
-define('APP_ASSET_VERSION', '1.9.1');
+define('APP_ASSET_VERSION', '1.10.0');
 
 // Nama session aplikasi
 define('SESSION_NAME', 'diskominfo_pkl_session');

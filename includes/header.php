@@ -106,7 +106,32 @@ $siteName       = APP_NAME;
     <link rel="stylesheet" href="<?= asset_url('vendor/bootstrap-icons/bootstrap-icons.min.css') ?>?v=<?= APP_ASSET_VERSION ?>">
     <link rel="stylesheet" href="<?= asset_url('css/style.css') ?>?v=<?= APP_ASSET_VERSION ?>">
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100<?= (($currentPage ?? '') === 'home') ? ' banten-intro-active' : '' ?>">
+
+<?php if (($currentPage ?? '') === 'home'): ?>
+    <!-- Intro khusus beranda: visual kawasan KP3B, bukan video "city" generik. -->
+    <noscript><style>#bantenIntro{display:none!important}.banten-intro-active{overflow:auto!important}</style></noscript>
+    <section id="bantenIntro" class="banten-intro" aria-label="Pembuka Portal PKL dan Magang Diskominfo Provinsi Banten">
+        <div class="banten-intro__visual" aria-hidden="true">
+            <img src="<?= e(asset_url('images/kp3b-gedung-opd.jpg')) ?>" alt="" fetchpriority="high">
+        </div>
+        <div class="banten-intro__grain" aria-hidden="true"></div>
+        <div class="banten-intro__content">
+            <div class="banten-intro__topline">
+                <span class="banten-intro__pulse" aria-hidden="true"></span>
+                DISKOMINFO PROVINSI BANTEN
+            </div>
+            <p class="banten-intro__place"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> KP3B, Curug &middot; Kota Serang</p>
+            <h1><span>Ruang Tumbuh</span>Talenta Digital Banten.</h1>
+            <p class="banten-intro__copy">Belajar, berkarya, dan memberi dampak lewat program PKL &amp; Magang.</p>
+            <button id="bantenIntroSkip" class="banten-intro__enter" type="button">
+                Masuk ke portal <i class="bi bi-arrow-down-right" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="banten-intro__progress" aria-hidden="true"><span></span></div>
+        <p class="banten-intro__note">Memuat pengalaman digital Banten</p>
+    </section>
+<?php endif; ?>
 
 <a class="visually-hidden-focusable position-fixed top-0 start-0 z-3 p-2 bg-white text-primary shadow" href="#main-content">
     Langsung ke konten utama

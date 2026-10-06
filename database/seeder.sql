@@ -22,10 +22,10 @@ INSERT INTO `users` (`id`, `name`, `username`, `email`, `password`, `role`, `is_
 -- SETTINGS SITUS (placeholder — ganti dengan data resmi)
 -- ------------------------------------------------------------
 INSERT INTO `settings` (`id`, `key`, `value`) VALUES (1,'site_tagline','Portal Informasi PKL & Magang');
-INSERT INTO `settings` (`id`, `key`, `value`) VALUES (2,'hero_title','Portal PKL & Magang');
-INSERT INTO `settings` (`id`, `key`, `value`) VALUES (3,'hero_subtitle','Diskominfo Provinsi Banten');
-INSERT INTO `settings` (`id`, `key`, `value`) VALUES (4,'hero_description','Pusat informasi, layanan, berita, dan dokumentasi kegiatan Praktik Kerja Lapangan (PKL) dan Magang di lingkungan Diskominfo Provinsi Banten.');
-INSERT INTO `settings` (`id`, `key`, `value`) VALUES (5,'hero_btn_primary','Informasi PKL');
+INSERT INTO `settings` (`id`, `key`, `value`) VALUES (2,'hero_title','Ruang Tumbuh Talenta Digital');
+INSERT INTO `settings` (`id`, `key`, `value`) VALUES (3,'hero_subtitle','Diskominfo Provinsi Banten - KP3B Serang');
+INSERT INTO `settings` (`id`, `key`, `value`) VALUES (4,'hero_description','Satu ruang untuk belajar, berkarya, dan membangun layanan digital yang berdampak bagi Banten.');
+INSERT INTO `settings` (`id`, `key`, `value`) VALUES (5,'hero_btn_primary','Mulai Eksplorasi');
 INSERT INTO `settings` (`id`, `key`, `value`) VALUES (6,'hero_btn_primary_link','?page=layanan');
 INSERT INTO `settings` (`id`, `key`, `value`) VALUES (7,'hero_btn_secondary','Informasi Magang');
 INSERT INTO `settings` (`id`, `key`, `value`) VALUES (8,'hero_btn_secondary_link','?page=layanan');

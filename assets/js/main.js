@@ -307,7 +307,42 @@
         apply();
     };
 
+    /* ------------------------------------------------------------
+       INTRO BERANDA — memberi pembuka sinematik tanpa mengunci
+       scroll seperti komponen video referensi. Selalu tersedia
+       tombol masuk, Escape, serta durasi singkat untuk aksesibilitas.
+       ------------------------------------------------------------ */
+    var initBantenIntro = function () {
+        var intro = document.getElementById('bantenIntro');
+        if (!intro) return;
+
+        var skip = document.getElementById('bantenIntroSkip');
+        var closed = false;
+        var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var duration = reduceMotion ? 700 : 4200;
+        var timer;
+
+        var closeIntro = function () {
+            if (closed) return;
+            closed = true;
+            window.clearTimeout(timer);
+            intro.classList.add('is-leaving');
+            document.body.classList.remove('banten-intro-active');
+            window.setTimeout(function () {
+                intro.setAttribute('hidden', '');
+                intro.remove();
+            }, reduceMotion ? 0 : 700);
+        };
+
+        if (skip) skip.addEventListener('click', closeIntro);
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') closeIntro();
+        });
+        timer = window.setTimeout(closeIntro, duration);
+    };
+
     initCopyLink();
     initLightbox();
     initTheme();
+    initBantenIntro();
 })();

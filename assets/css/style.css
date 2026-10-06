@@ -933,6 +933,309 @@ border: 4px solid var(--dp-primary-light);
     overflow: hidden;
 }
 
+/* ---------- HOMEPAGE: VISUAL KP3B / GEN-Z LAYER ---------- */
+.banten-intro-active {
+    overflow: hidden;
+}
+
+.banten-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+    isolation: isolate;
+    color: #fff;
+    background: #061329;
+}
+
+.banten-intro__visual,
+.banten-intro__visual::after,
+.banten-intro__grain {
+    position: absolute;
+    inset: 0;
+}
+
+.banten-intro__visual { z-index: 0; }
+
+.banten-intro__visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    filter: saturate(.8) contrast(1.08) brightness(.62);
+    animation: banten-intro-zoom 5s cubic-bezier(.2,.7,.2,1) both;
+}
+
+.banten-intro__visual::after {
+    content: '';
+    background:
+        linear-gradient(90deg, rgba(3, 14, 35, .94) 0%, rgba(4, 25, 58, .72) 45%, rgba(4, 25, 58, .22) 100%),
+        linear-gradient(0deg, rgba(2, 9, 27, .64), transparent 52%);
+}
+
+.banten-intro__grain {
+    z-index: 1;
+    opacity: .28;
+    background-image:
+        linear-gradient(rgba(110, 203, 255, .08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(110, 203, 255, .08) 1px, transparent 1px);
+    background-size: 36px 36px;
+    mask-image: linear-gradient(90deg, #000, transparent 75%);
+}
+
+.banten-intro__content {
+    position: relative;
+    z-index: 2;
+    width: min(1160px, 88vw);
+    padding: 1rem 0 3.2rem;
+    animation: banten-intro-content .8s .15s both;
+}
+
+.banten-intro__topline,
+.banten-intro__place {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    font-size: clamp(.66rem, 1vw, .78rem);
+    font-weight: 700;
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    color: #f7c76d;
+}
+
+.banten-intro__place {
+    margin: .8rem 0 1.1rem;
+    color: rgba(255, 255, 255, .74);
+    letter-spacing: .08em;
+}
+
+.banten-intro__pulse {
+    width: .52rem;
+    height: .52rem;
+    border-radius: 999px;
+    background: #72e3c3;
+    box-shadow: 0 0 0 0 rgba(114, 227, 195, .7);
+    animation: banten-pulse 1.7s infinite;
+}
+
+.banten-intro h1 {
+    max-width: 830px;
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2.6rem, 7.4vw, 6.8rem);
+    font-weight: 800;
+    line-height: .92;
+    letter-spacing: -.065em;
+    text-wrap: balance;
+}
+
+.banten-intro h1 span {
+    display: block;
+    color: #ffc35d;
+}
+
+.banten-intro__copy {
+    max-width: 430px;
+    margin: 1.3rem 0 1.65rem;
+    color: rgba(255, 255, 255, .82);
+    font-size: clamp(.94rem, 1.5vw, 1.07rem);
+}
+
+.banten-intro__enter {
+    display: inline-flex;
+    align-items: center;
+    gap: .6rem;
+    padding: .75rem 1rem;
+    border: 1px solid rgba(255, 255, 255, .52);
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(2, 13, 34, .32);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, .16);
+    font: inherit;
+    font-size: .85rem;
+    font-weight: 700;
+    transition: transform .2s ease, background-color .2s ease;
+}
+
+.banten-intro__enter:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, .14);
+}
+
+.banten-intro__progress {
+    position: absolute;
+    z-index: 2;
+    right: 6vw;
+    bottom: clamp(1.25rem, 4vw, 3rem);
+    left: 6vw;
+    height: 2px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, .22);
+}
+
+.banten-intro__progress span {
+    display: block;
+    width: 100%;
+    height: 100%;
+    transform: scaleX(0);
+    transform-origin: left;
+    background: linear-gradient(90deg, #ffc35d, #fff0cc);
+    animation: banten-intro-progress 4.2s linear both;
+}
+
+.banten-intro__note {
+    position: absolute;
+    z-index: 2;
+    right: 6vw;
+    bottom: calc(clamp(1.25rem, 4vw, 3rem) + .75rem);
+    margin: 0;
+    color: rgba(255, 255, 255, .62);
+    font-size: .7rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.banten-intro.is-leaving {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .65s ease;
+}
+
+.dp-hero--banten {
+    min-height: min(740px, 77vh);
+    display: grid;
+    align-items: center;
+    padding: 5.5rem 0 6rem;
+    background: #061936;
+    isolation: isolate;
+}
+
+.dp-hero--banten .container { position: relative; z-index: 2; }
+
+.dp-hero-visual,
+.dp-hero-visual::after {
+    position: absolute;
+    inset: 0;
+}
+
+.dp-hero-visual { z-index: 0; overflow: hidden; }
+
+.dp-hero-visual img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 52%;
+    filter: saturate(.88) contrast(1.07) brightness(.54);
+    transform: scale(1.03);
+}
+
+.dp-hero-visual::after {
+    content: '';
+    background:
+        linear-gradient(90deg, rgba(3, 16, 44, .95), rgba(5, 27, 68, .68) 52%, rgba(5, 27, 68, .18)),
+        linear-gradient(0deg, rgba(3, 16, 44, .75), transparent 60%);
+}
+
+.dp-hero-orb {
+    position: absolute;
+    z-index: 1;
+    width: 28rem;
+    height: 28rem;
+    border-radius: 50%;
+    filter: blur(4px);
+    opacity: .58;
+    pointer-events: none;
+}
+
+.dp-hero-orb--one { top: -15rem; left: -10rem; background: radial-gradient(circle, rgba(36, 129, 255, .6), transparent 67%); }
+.dp-hero-orb--two { right: 3%; bottom: -20rem; background: radial-gradient(circle, rgba(255, 178, 55, .35), transparent 66%); }
+
+.dp-hero--banten::before {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    content: '';
+    pointer-events: none;
+    opacity: .18;
+    background-image: radial-gradient(rgba(255, 255, 255, .7) .7px, transparent .7px);
+    background-size: 13px 13px;
+    mask-image: linear-gradient(90deg, #000, transparent 70%);
+}
+
+.dp-hero--banten::after { z-index: 3; }
+
+.dp-hero--banten h1 {
+    max-width: 850px;
+    margin-inline: auto;
+    font-size: clamp(2.4rem, 6vw, 5.15rem);
+    line-height: .98;
+    letter-spacing: -.055em;
+    text-wrap: balance;
+}
+
+.dp-hero--banten .dp-hero-subtitle {
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    font-size: clamp(.78rem, 1.5vw, .95rem);
+}
+
+.dp-hero--banten .dp-hero-desc { font-size: clamp(.95rem, 1.5vw, 1.08rem); }
+
+.dp-about-visual {
+    position: relative;
+    min-height: 300px;
+    overflow: hidden;
+    box-shadow: 0 18px 46px rgba(5, 29, 85, .18);
+}
+
+.dp-about-visual::after {
+    position: absolute;
+    inset: 0;
+    content: '';
+    background: linear-gradient(0deg, rgba(4, 22, 55, .7), transparent 56%);
+}
+
+.dp-about-visual img {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    object-fit: cover;
+    object-position: center;
+}
+
+.dp-about-visual-label {
+    position: absolute;
+    z-index: 1;
+    bottom: 1rem;
+    left: 1rem;
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .38rem .65rem;
+    border: 1px solid rgba(255, 255, 255, .32);
+    border-radius: 999px;
+    color: #fff;
+    background: rgba(3, 19, 47, .45);
+    backdrop-filter: blur(7px);
+    font-size: .74rem;
+    font-weight: 700;
+}
+
+@keyframes banten-intro-zoom {
+    from { transform: scale(1.12); }
+    to { transform: scale(1); }
+}
+
+@keyframes banten-intro-content {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes banten-intro-progress { to { transform: scaleX(1); } }
+@keyframes banten-pulse { 70% { box-shadow: 0 0 0 8px rgba(114, 227, 195, 0); } 100% { box-shadow: 0 0 0 0 rgba(114, 227, 195, 0); } }
+
 .dp-hero::after {
     content: '';
     position: absolute;
@@ -2557,5 +2860,30 @@ html:not(.dp-light) * {
     html.dp-dark *,
     html:not(.dp-light) * {
         transition: none;
+    }
+
+    .banten-intro *,
+    .dp-hero--banten * {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    .banten-intro__content {
+        width: min(100% - 2.5rem, 560px);
+        padding-bottom: 5rem;
+    }
+
+    .banten-intro__visual img,
+    .dp-hero-visual img {
+        object-position: 61% center;
+    }
+
+    .banten-intro__note { display: none; }
+
+    .dp-hero--banten {
+        min-height: 590px;
+        padding: 4.5rem 0 5rem;
     }
 }

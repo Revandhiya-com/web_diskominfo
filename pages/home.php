@@ -10,17 +10,30 @@ $pageDescription = 'Portal resmi PKL dan Magang Diskominfo Provinsi Banten: info
 /* ============================================================
    1. HERO — teks dari tabel settings
    ============================================================ */
-$heroTitle    = setting('hero_title', 'Portal PKL & Magang');
-$heroSubtitle = setting('hero_subtitle', 'Diskominfo Provinsi Banten');
-$heroDesc     = setting('hero_description', 'Pusat informasi, layanan, berita, dan dokumentasi kegiatan Praktik Kerja Lapangan dan Magang.');
+$heroTitle    = setting('hero_title', 'Ruang Tumbuh Talenta Digital');
+$heroSubtitle = setting('hero_subtitle', 'Diskominfo Provinsi Banten • KP3B Serang');
+$heroDesc     = setting('hero_description', 'Satu ruang untuk belajar, berkarya, dan membangun layanan digital yang berdampak bagi Banten.');
+/* Nilai seed lama tetap ditingkatkan secara aman; nilai yang telah disunting admin tidak disentuh. */
+if ($heroTitle === 'Portal PKL & Magang') {
+    $heroTitle = 'Ruang Tumbuh Talenta Digital';
+}
+if ($heroSubtitle === 'Diskominfo Provinsi Banten') {
+    $heroSubtitle = 'Diskominfo Provinsi Banten • KP3B Serang';
+}
+if ($heroDesc === 'Pusat informasi, layanan, berita, dan dokumentasi kegiatan Praktik Kerja Lapangan (PKL) dan Magang di lingkungan Diskominfo Provinsi Banten.') {
+    $heroDesc = 'Satu ruang untuk belajar, berkarya, dan membangun layanan digital yang berdampak bagi Banten.';
+}
 $heroBtn1     = [
-    'label' => setting('hero_btn_primary', 'Informasi PKL'),
+    'label' => setting('hero_btn_primary', 'Mulai Eksplorasi'),
     'link'  => setting('hero_btn_primary_link', '?page=layanan'),
 ];
 $heroBtn2     = [
     'label' => setting('hero_btn_secondary', 'Informasi Magang'),
     'link'  => setting('hero_btn_secondary_link', '?page=layanan'),
 ];
+if ($heroBtn1['label'] === 'Informasi PKL') {
+    $heroBtn1['label'] = 'Mulai Eksplorasi';
+}
 
 /* ============================================================
    4. PENGUMUMAN TERBARU — maks 5
@@ -116,11 +129,16 @@ $hasThumb = function (string $dir, ?string $file): bool {
 };
 ?>
 <!-- ============ 2. HERO ============ -->
-<section class="dp-hero" aria-labelledby="hero-title">
+<section class="dp-hero dp-hero--banten" aria-labelledby="hero-title">
+    <div class="dp-hero-visual" aria-hidden="true">
+        <img src="<?= e(asset_url('images/kp3b-gedung-opd.jpg')) ?>" alt="" fetchpriority="high">
+    </div>
+    <div class="dp-hero-orb dp-hero-orb--one" aria-hidden="true"></div>
+    <div class="dp-hero-orb dp-hero-orb--two" aria-hidden="true"></div>
     <div class="container">
         <div class="row align-items-center justify-content-center text-center py-3">
             <div class="col-lg-10">
-                <span class="dp-hero-eyebrow mb-3 d-inline-block"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Portal Informasi Resmi</span>
+                <span class="dp-hero-eyebrow mb-3 d-inline-block"><i class="bi bi-stars" aria-hidden="true"></i> Portal PKL &amp; Magang &middot; Banten</span>
                 <h1 id="hero-title"><?= e($heroTitle) ?></h1>
                 <p class="dp-hero-subtitle"><?= e($heroSubtitle) ?></p>
                 <p class="dp-hero-desc mx-auto" style="max-width: 760px;"><?= e($heroDesc) ?></p>
@@ -204,8 +222,9 @@ $hasThumb = function (string $dir, ?string $file): bool {
     <div class="container">
         <div class="row g-4 align-items-center">
             <div class="col-lg-5">
-                <div class="dp-card-media rounded-3" aria-hidden="true">
-                    <div class="dp-media-placeholder"><i class="bi bi-buildings"></i></div>
+                <div class="dp-about-visual rounded-3">
+                    <img src="<?= e(asset_url('images/kp3b-gedung-opd.jpg')) ?>" alt="Gedung SKPD Terpadu di kawasan KP3B, Curug, Kota Serang">
+                    <span class="dp-about-visual-label"><i class="bi bi-geo-alt-fill" aria-hidden="true"></i> KP3B &middot; Kota Serang</span>
                 </div>
             </div>
             <div class="col-lg-7">
